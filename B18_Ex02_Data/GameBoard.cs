@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B18_Ex02_Data
 {
-	public class GameBoard
+	internal class GameBoard
 	{
 		private uint m_BoardSize;
 		private GamePiece[,] m_Board;

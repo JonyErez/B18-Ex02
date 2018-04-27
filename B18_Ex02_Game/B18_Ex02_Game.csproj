@@ -4,15 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{25A8EA36-9C73-4238-ADA5-447D337CF826}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>B18_Ex02_Interface</RootNamespace>
-    <AssemblyName>B18_Ex02_Interface</AssemblyName>
+    <ProjectGuid>{16A9717E-C2EF-4DAA-AA31-F8C6E7E35AA4}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>B18_Ex02_Game</RootNamespace>
+    <AssemblyName>B18_Ex02_Game</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -29,23 +30,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ex02.ConsoleUtils">
-      <HintPath>..\..\..\..\..\..\Temp\Ex02.ConsoleUtils.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleInterface.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\B18_Ex02_Data\B18_Ex02_Data.csproj">
-      <Project>{353a24cf-0c2b-4ea2-a6dc-ae5cf87953d8}</Project>
-      <Name>B18_Ex02_Data</Name>
+    <ProjectReference Include="..\B18_Ex02_Logic\B18_Ex02_Game_Controller.csproj">
+      <Project>{bb39df16-00e2-4306-91dc-2206f4a8bb72}</Project>
+      <Name>B18_Ex02_Game_Controller</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

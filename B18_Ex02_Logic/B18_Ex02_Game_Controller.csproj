@@ -5,9 +5,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BB39DF16-00E2-4306-91DC-2206F4A8BB72}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>B18_Ex02_Logic</RootNamespace>
-    <AssemblyName>B18_Ex02_Logic</AssemblyName>
+    <OutputType>Library</OutputType>
+    <RootNamespace>B18_Ex02_Game_Controller</RootNamespace>
+    <AssemblyName>B18_Ex02_Game_Controller</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,11 +30,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

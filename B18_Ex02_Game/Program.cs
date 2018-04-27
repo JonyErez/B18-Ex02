@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace B18_Ex02_Logic
+namespace B18_Ex02_Game
 {
 	public class Program
 	{
