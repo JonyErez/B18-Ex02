@@ -6,10 +6,10 @@ namespace B18_Ex02_Data
 {
 	internal class GameBoard
 	{
-		private uint m_BoardSize;
+		private int m_BoardSize;
 		private GamePiece[,] m_Board;
 
-		public uint Size
+		public int Size
 		{
 			set
 			{
@@ -20,6 +20,16 @@ namespace B18_Ex02_Data
 			{
 				return m_BoardSize;
 			}
+		}
+
+		public char GetSymbol(Point i_Coordinates)
+		{
+			char symbol = ' ';
+			if (m_Board[i_Coordinates.X, i_Coordinates.Y] != null)
+			{
+				symbol = m_Board[i_Coordinates.X, i_Coordinates.Y].Symbol;
+			}
+			return symbol;
 		}
 	}
 }

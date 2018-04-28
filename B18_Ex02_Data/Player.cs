@@ -9,8 +9,15 @@ namespace B18_Ex02_Data
 		private List<GamePiece> m_GamePieces = new List<GamePiece>();
 		private uint m_Score = 0;
 		private string m_Name;
-		private readonly char m_GamePieceSymbol;
-		private readonly char m_KingSymbol;
+		private readonly char k_GamePieceSymbol;
+		private readonly char k_KingSymbol;
+
+		public Player(string i_Name, char i_GamePieceSymbol, char i_KingSymbol)
+		{
+			m_Name = i_Name;
+			k_GamePieceSymbol = i_GamePieceSymbol;
+			k_KingSymbol = i_KingSymbol;
+		}
 
 		public string Name
 		{
@@ -36,8 +43,5 @@ namespace B18_Ex02_Data
 				m_Score = value;
 			}
 		}
-
-
-
 	}
 }
