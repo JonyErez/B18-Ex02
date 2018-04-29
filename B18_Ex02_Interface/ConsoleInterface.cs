@@ -6,32 +6,46 @@ using B18_Ex02_Data;
 
 namespace B18_Ex02_Interface
 {
-	/*
-	public class Program
-	{
-		public static void Main()
-		{
-			ConsoleInterface test = new ConsoleInterface();
-			char[,] board = new char[8, 8] {
-				{' ','O',' ','O',' ','O',' ', 'O'},
-				{'O',' ','O',' ','O',' ','O', ' '},
-				{' ','O',' ','O',' ','O',' ', 'O'},
-				{' ',' ',' ',' ',' ',' ',' ',' ' },
-				{' ',' ',' ',' ',' ',' ',' ',' ' },
-				{'X',' ','X',' ','X',' ','X',' ' },
-				{' ','X',' ','X',' ','X',' ','X' },
-				{'X',' ','X',' ','X',' ', 'X',' '}
-			};
-			test.PrintBoard(board);
-			Console.ReadLine();
-		}
-	}
-	*/
-
 	public class ConsoleInterface
 	{
 		private char[,] m_GameBoard;
-		private string m_LastAction;
+		private string m_LastAction = null;
+
+		public void TurnInformation(string i_CurrentPlayerName, char i_CurrentPlayerSymbol, string i_PreviousPlayerName, char i_PreviousPlayerSymbol)
+		{
+			if(m_LastAction != null)
+			{
+				Console.WriteLine("{0}'s move was ({1}): {2}", i_PreviousPlayerName, i_PreviousPlayerSymbol, m_LastAction);
+			}
+			Console.WriteLine("{0}'s turn ({1}): ", i_CurrentPlayerName, i_CurrentPlayerSymbol);
+		}
+
+		public string askPlayerName(int i_PlayerNumber)
+		{
+			Console.WriteLine("Please enter player {0}s name: ", i_PlayerNumber == 0 ? "one" : "two");
+			return Console.ReadLine();
+		}
+
+		public int AskGameBoardSize()
+		{
+			int gameBoardSize;
+			bool legalValue;
+
+			Console.WriteLine("Please enter the game board size (6, 8, 10): ");
+			legalValue = int.TryParse(Console.ReadLine(), out gameBoardSize);
+			while (!legalValue || (gameBoardSize != 6 && gameBoardSize != 8 && gameBoardSize != 10))
+			{
+				Console.WriteLine("Invalid input!");
+				Console.WriteLine("Please enter a valid game board size (6, 8, 10): ");
+				legalValue = int.TryParse(Console.ReadLine(), out gameBoardSize);
+			}
+			return gameBoardSize;
+		}
+
+		public void ClearScreen()
+		{
+			Ex02.ConsoleUtils.Screen.Clear();
+		}
 
 		public char[,] GameBoard
 		{
@@ -43,6 +57,14 @@ namespace B18_Ex02_Interface
 			set
 			{
 				m_GameBoard = value;
+			}
+		}
+
+		public int GameBoardSize
+		{
+			get
+			{
+				return m_GameBoard.GetLength(0);
 			}
 		}
 

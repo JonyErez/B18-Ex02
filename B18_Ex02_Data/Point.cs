@@ -15,6 +15,11 @@ namespace B18_Ex02_Data
 			y = 0;
 		}
 
+		public static Point operator+(Point point1, Point point2)
+		{
+			return new Point(point1.X + point2.X, point1.Y + point2.Y);
+		}
+
 		public Point(int i_x, int i_y)
 		{
 			X = i_x;
