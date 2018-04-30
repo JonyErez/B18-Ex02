@@ -37,7 +37,7 @@ namespace B18_Ex02_Data
 			o_canEat = false;
 			foreach (GamePiece currentPiece in m_Players[m_PlayerTurn].GamePieces)
 			{
-				canMove = canMove || m_Board.hasLegalMoves(currentPiece, out canEat);
+				canMove = m_Board.hasLegalMoves(currentPiece, out canEat) || canMove;
 				o_canEat = o_canEat || canEat;
 			}
 
@@ -168,6 +168,11 @@ namespace B18_Ex02_Data
 		public char GetSymbol(Point i_Coordinates)
 		{
 			return m_Board.GetSymbol(i_Coordinates);
+		}
+
+		public Point GetCurrentPieceLocation()
+		{
+			return m_PieceToMove.Location;
 		}
 	}
 }

@@ -18,18 +18,42 @@ namespace B18_Ex02_Game_Controller
 			bool hasEaten;
 			if (m_Model.CanPlayerMove(out needsToEat))
 			{
-				getPlayerInput(out source, out destination);
+				getPlayerInputForFirstTurn(out source, out destination);
 				while (!m_Model.FirstMoveInTurn(source, destination, needsToEat, out hasEaten))
 				{
-					getPlayerInput(out source, out destination);
+					PrintBoard();
+					m_View.PrintError(ConsoleInterface.eErrors.InvalidInput);
+					getPlayerInputForFirstTurn(out source, out destination);
 				}
-				UpdateViewBoard();
-				PrintBoard();
-
+				m_View.LastAction = string.Format("{0}>{1}", locationToString(source), locationToString(destination));
+				afterMoveActions();
+				if (hasEaten)
+				{
+					while (m_Model.HasAnotherLegalMove())
+					{
+						getPlayerInputForContinuousTurns(m_Model.GetCurrentPieceLocation(), out destination);
+						while (!m_Model.ContinuesMove(destination))
+						{
+							PrintBoard();
+							m_View.PrintError(ConsoleInterface.eErrors.InvalidInput);
+							getPlayerInputForContinuousTurns(m_Model.GetCurrentPieceLocation(), out destination);
+						}
+						m_View.LastAction = string.Format("{0}>{1}", locationToString(source), locationToString(destination));
+						afterMoveActions();
+					}
+				}
 			}
+			m_Model.EndTurn();
 		}
 
-		private void getPlayerInput(out Point o_Source, out Point o_Destination)
+		private void afterMoveActions()
+		{
+			m_Model.CheckAndMakeKing();
+			UpdateViewBoard();
+			PrintBoard();
+		}
+
+		private void getPlayerInputForFirstTurn(out Point o_Source, out Point o_Destination)
 		{
 			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn),
 									m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()));
@@ -44,6 +68,23 @@ namespace B18_Ex02_Game_Controller
 				playerInput = Console.ReadLine();
 			}
 			stringToLocations(playerInput, out o_Source, out o_Destination);
+		}
+
+		private void getPlayerInputForContinuousTurns(Point i_Location, out Point o_Destination)
+		{
+			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn),
+									m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn));
+			string playerInput = Console.ReadLine();
+			char maxCapital = (char)(m_Model.BoardSize + 'A' - 1);
+			char maxLittle = (char)(m_Model.BoardSize + 'a' - 1);
+			string regex = string.Format("^{0}>[A-{1}][a-{2}]$", locationToString(i_Location), maxCapital, maxLittle);
+			System.Text.RegularExpressions.Regex checkInput = new System.Text.RegularExpressions.Regex(regex);
+			while (!checkInput.IsMatch(playerInput))
+			{
+				Console.WriteLine("Please enter a valid input: ");
+				playerInput = Console.ReadLine();
+			}
+			stringToLocations(playerInput, out i_Location, out o_Destination);
 		}
 
 		private void stringToLocations(string i_PlayerInput, out Point o_Source, out Point o_Destination)
@@ -86,5 +127,9 @@ namespace B18_Ex02_Game_Controller
 			m_View.PrintBoard();
 		}
 
+		private string locationToString(Point i_Location)
+		{
+			return string.Format("{0}{1}", (char)(i_Location.X + 'A'), (char)(i_Location.Y + 'a'));
+		}
 	}
 }

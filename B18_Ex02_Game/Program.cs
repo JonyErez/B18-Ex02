@@ -20,8 +20,10 @@ namespace B18_Ex02_Game
 			game.InitializeBoard();
 			game.InitializeViewBoard();
 			game.PrintBoard();
-			game.PlayCurrentTurn();
-			
+			while (true)
+			{
+				game.PlayCurrentTurn();
+			}
 		}
 	}
 }

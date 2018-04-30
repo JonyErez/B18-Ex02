@@ -128,5 +128,17 @@ namespace B18_Ex02_Interface
 			currentRow.Append('|');
 			Console.WriteLine(currentRow);
 		}
+
+		public enum eErrors { InvalidInput = 1 }
+
+		public void PrintError(eErrors i_Error)
+		{
+			switch (i_Error)
+			{
+				case eErrors.InvalidInput:
+					Console.WriteLine("Invalid input!");
+					break;
+			}
+		}
 	}
 }
