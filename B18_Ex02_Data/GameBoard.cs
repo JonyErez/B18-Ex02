@@ -78,7 +78,7 @@ namespace B18_Ex02_Data
 					if (Math.Abs(rowDiff) == 2 && Math.Abs(colDiff) == 2)
 					{
 						rowDiff /= 2;
-						if (rowDiff == (int)i_Piece.Owner.Direction)
+						if (rowDiff == (int)i_VerticalDirection)
 						{
 							colDiff /= 2;
 							int eatenSquareRow = i_Piece.Location.Y + rowDiff;
