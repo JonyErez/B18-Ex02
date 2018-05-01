@@ -55,7 +55,7 @@ namespace B18_Ex02_Data
 			{
 				if (m_Players[m_PlayerTurn] == m_PieceToMove.Owner)
 				{
-					if (m_Board.isLegalFirstAction(m_PieceToMove, i_Destination, out o_HasEaten, out eatenPiece))
+					if (m_Board.isFirstActionLegal(m_PieceToMove, i_Destination, out o_HasEaten, out eatenPiece))
 					{
 						if (o_HasEaten == i_NeedsToEat)
 						{
@@ -81,7 +81,7 @@ namespace B18_Ex02_Data
 		{
 			bool canMove = false;
 
-			if (m_Board.isLegalContinuationAction(m_PieceToMove, i_Destination, out GamePiece o_EatenPiece))
+			if (m_Board.isContinuationActionLegal(m_PieceToMove, i_Destination, out GamePiece o_EatenPiece))
 			{
 				canMove = true;
 				movePiece(i_Destination);
@@ -173,6 +173,16 @@ namespace B18_Ex02_Data
 		public Point GetCurrentPieceLocation()
 		{
 			return m_PieceToMove.Location;
+		}
+
+		public int GetCurrentPlayerNumberOfPieces()
+		{
+			return m_Players[m_PlayerTurn].GamePieces.Count;
+		}
+
+		public int GetOtherPlayerNumberOfPieces()
+		{
+			return m_Players[otherPlayer()].GamePieces.Count;
 		}
 	}
 }

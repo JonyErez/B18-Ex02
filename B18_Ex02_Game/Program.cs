@@ -20,10 +20,14 @@ namespace B18_Ex02_Game
 			game.InitializeBoard();
 			game.InitializeViewBoard();
 			game.PrintBoard();
-			while (true)
+			while (!game.IsGameOver())
 			{
-				game.PlayCurrentTurn();
+				game.PlayCurrentTurn(); 
 			}
+			//Needs to be continue
+
+			Console.WriteLine("GAME IS OVER");
+
 		}
 	}
 }
