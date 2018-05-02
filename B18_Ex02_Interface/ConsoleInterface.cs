@@ -128,6 +128,20 @@ namespace B18_Ex02_Interface
 			Console.WriteLine(currentRow);
 		}
 
+		public string getPlayerInput(List<string> i_LegalInputs)
+		{
+			string playerInput;
+
+			playerInput = Console.ReadLine();
+			while(!i_LegalInputs.Contains(playerInput))
+			{
+				PrintError(eErrors.InvalidMoveInput);
+				playerInput = Console.ReadLine();
+			}
+
+			return playerInput;
+		}
+
 		public enum eErrors { InvalidBoardInput = 1, InvalidMoveInput = 2, InvalidPieceMove = 3}
 
 		public void PrintError(eErrors i_Error)

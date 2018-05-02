@@ -11,6 +11,23 @@ namespace B18_Ex02_Data
 		private int m_PlayerTurn = 0;
 		private GamePiece m_PieceToMove;
 		private Point m_SquareToMoveTo;
+		private List<PieceMove> m_CurrentTurnPossibleMoves = new List<PieceMove>(2);
+
+		public List<string> GetCurrentMoves()
+		{
+			List<string> currentMoves = new List<string>(m_CurrentTurnPossibleMoves.Count);
+			foreach (PieceMove currentMove in m_CurrentTurnPossibleMoves)
+			{
+				currentMoves.Add(string.Format("{0}>{1}", locationToString(currentMove.Location), locationToString(currentMove.Destination)));
+			}
+
+			return currentMoves;
+		}
+
+		private string locationToString(Point i_Location)
+		{
+			return string.Format("{0}{1}", (char)(i_Location.X + 'A'), (char)(i_Location.Y + 'a'));
+		}
 
 		public string GetPlayerName(int i_PlayerNumber)
 		{
@@ -28,6 +45,23 @@ namespace B18_Ex02_Data
 			{
 				return m_PlayerTurn;
 			}
+		}
+
+		public bool FindPlayerMoves()
+		{
+			foreach (GamePiece currentPiece in m_Players[m_PlayerTurn].GamePieces)
+			{
+				m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(currentPiece));
+			}
+			if(m_CurrentTurnPossibleMoves.Count == 0)
+			{
+				foreach (GamePiece currentPiece in m_Players[m_PlayerTurn].GamePieces)
+				{
+					m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleSteppingForwardMoves(currentPiece));
+				}
+			}
+
+			return m_CurrentTurnPossibleMoves.Count != 0;
 		}
 
 		public bool CanPlayerMove(out bool o_canEat)
@@ -151,12 +185,13 @@ namespace B18_Ex02_Data
 
 		public void InitializePlayerOne(string i_Name)
 		{
-			m_Players[0] = new Player(i_Name, 'O', 'U', Player.eDirection.DOWN);
+			m_Players[0] = new Player(i_Name, 'O', 'U', Player.eDirection.DOWN, false);
+
 		}
 
-		public void InitializePlayerTwo(string i_Name)
+		public void InitializePlayerTwo(string i_Name, bool i_IsComputer)
 		{
-			m_Players[1] = new Player(i_Name, 'X', 'K', Player.eDirection.UP);
+			m_Players[1] = new Player(i_Name, 'X', 'K', Player.eDirection.UP, i_IsComputer);
 		}
 
 		public void InitializeBoard(int i_BoardSize)

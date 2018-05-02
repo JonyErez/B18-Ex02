@@ -11,6 +11,11 @@ namespace B18_Ex02_Game_Controller
 		private ConsoleInterface m_View = new ConsoleInterface();
 		private Game m_Model = new Game();
 
+		public void Test()
+		{
+			m_Model.FindPlayerMoves();
+		}
+
 		public bool PlayCurrentTurn()
 		{
 			Point source, destination;
@@ -99,7 +104,7 @@ namespace B18_Ex02_Game_Controller
 		public void InitializePlayers()
 		{
 			m_Model.InitializePlayerOne(m_View.askPlayerName(m_Model.PlayerTurn));
-			m_Model.InitializePlayerTwo(m_View.askPlayerName(m_Model.otherPlayer()));
+			m_Model.InitializePlayerTwo(m_View.askPlayerName(m_Model.otherPlayer()),false); //TODO computer initialization.
 		}
 
 		public void InitializeBoard()

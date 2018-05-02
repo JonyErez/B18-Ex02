@@ -12,15 +12,17 @@ namespace B18_Ex02_Data
 		private readonly char k_GamePieceSymbol;
 		private readonly char k_KingSymbol;
 		private readonly eDirection m_Direction;
+		private readonly bool k_IsComputer;
 
 		internal enum eDirection {DOWN = 1, UP = -1, LEFT = -1, RIGHT = 1};
 
-		public Player(string i_Name, char i_GamePieceSymbol, char i_KingSymbol, eDirection i_Direction)
+		public Player(string i_Name, char i_GamePieceSymbol, char i_KingSymbol, eDirection i_Direction, bool i_IsComputer)
 		{
 			k_Name = i_Name;
 			k_GamePieceSymbol = i_GamePieceSymbol;
 			k_KingSymbol = i_KingSymbol;
 			m_Direction = i_Direction;
+			k_IsComputer = i_IsComputer;
 		}
 
 		public eDirection Direction
