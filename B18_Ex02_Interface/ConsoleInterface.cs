@@ -35,8 +35,7 @@ namespace B18_Ex02_Interface
 			legalValue = int.TryParse(Console.ReadLine(), out gameBoardSize);
 			while (!legalValue || (gameBoardSize != 6 && gameBoardSize != 8 && gameBoardSize != 10))
 			{
-				Console.WriteLine("Invalid input!");
-				Console.WriteLine("Please enter a valid game board size (6, 8, 10): ");
+				PrintError(ConsoleInterface.eErrors.InvalidBoardInput);
 				legalValue = int.TryParse(Console.ReadLine(), out gameBoardSize);
 			}
 			return gameBoardSize;
@@ -129,14 +128,36 @@ namespace B18_Ex02_Interface
 			Console.WriteLine(currentRow);
 		}
 
-		public enum eErrors { InvalidInput = 1 }
+		public string getPlayerInput(List<string> i_LegalInputs)
+		{
+			string playerInput;
+
+			playerInput = Console.ReadLine();
+			while(!i_LegalInputs.Contains(playerInput))
+			{
+				PrintError(eErrors.InvalidMoveInput);
+				playerInput = Console.ReadLine();
+			}
+
+			return playerInput;
+		}
+
+		public enum eErrors { InvalidBoardInput = 1, InvalidMoveInput = 2, InvalidPieceMove = 3}
 
 		public void PrintError(eErrors i_Error)
 		{
 			switch (i_Error)
 			{
-				case eErrors.InvalidInput:
-					Console.WriteLine("Invalid input!");
+				case eErrors.InvalidBoardInput:
+Console.WriteLine(string.Format(@"Invalid board input!
+Please enter a valid game board size(6, 8, 10): "));
+					break;
+				case eErrors.InvalidMoveInput:
+Console.WriteLine(string.Format(@"Invalid move input!
+Please enter a valid input in the following format: COLrow>COLrow"));
+					break;
+				case eErrors.InvalidPieceMove:
+					Console.WriteLine("Invalid piece move!");
 					break;
 			}
 		}

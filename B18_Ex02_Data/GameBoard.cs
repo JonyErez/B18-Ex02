@@ -15,7 +15,129 @@ namespace B18_Ex02_Data
 			m_Board = new GamePiece[i_BoardSize, i_BoardSize];
 		}
 
-		public bool isLegalFirstAction(GamePiece i_Piece, Point i_NewLocation, out bool o_HasEaten, out GamePiece o_EatenPiece)
+		//public List<PieceMove> FindPossibleMoves(GamePiece i_GamePiece)
+		//{
+		//	List<PieceMove> currentPiecePossibleMoves = new List<PieceMove>(4);
+		//	currentPiecePossibleMoves.AddRange(findPossibleEatingMoves(i_GamePiece));
+		//	if(currentPiecePossibleMoves.Count == 0)
+		//	{
+		//		currentPiecePossibleMoves.AddRange(findPossibleSteppingForwardMoves(i_GamePiece));
+		//	}
+		//	return currentPiecePossibleMoves;
+		//}
+
+		public List<PieceMove> findPossibleSteppingForwardMoves(GamePiece i_GamePiece)
+		{
+			List<PieceMove> possibleSteppingForwardMoves = new List<PieceMove>(2);
+			if(i_GamePiece.IsKing)
+			{
+				possibleSteppingForwardMoves.AddRange(findSteppingForwardMoves(i_GamePiece, i_GamePiece.Owner.ReverseDirection));
+			}
+			possibleSteppingForwardMoves.AddRange(findSteppingForwardMoves(i_GamePiece, i_GamePiece.Owner.Direction));
+
+			return possibleSteppingForwardMoves;
+		}
+
+		private List<PieceMove> findSteppingForwardMoves(GamePiece i_GamePiece, Player.eDirection i_VerticalDirection)
+		{
+			List<PieceMove> currentPieceSteppingForward = new List<PieceMove>(2);
+			PieceMove currentPieceSteppingLeft = findSpecificSteppingMove(i_GamePiece.Location, i_VerticalDirection, Player.eDirection.LEFT);
+			PieceMove currentPieceSteppingRight = findSpecificSteppingMove(i_GamePiece.Location, i_VerticalDirection, Player.eDirection.RIGHT);
+
+			if(currentPieceSteppingLeft != null)
+			{
+				currentPieceSteppingForward.Add(currentPieceSteppingLeft);
+			}
+			if (currentPieceSteppingRight != null)
+			{
+				currentPieceSteppingForward.Add(currentPieceSteppingRight);
+			}
+
+			return currentPieceSteppingForward;
+		}
+
+		private PieceMove findSpecificSteppingMove(Point i_Location, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
+		{
+			PieceMove steppingMove = null;
+			int row = i_Location.Y + (int)i_VerticalDirection;
+			int col = i_Location.X + (int)i_HorizontalDirection;
+
+			if(isCoordinateInBoard(row, col) && getSquareOwnership(row, col) == null)
+			{
+				Point destination = new Point(col, row);
+				steppingMove = new PieceMove(i_Location, destination);
+			}
+			return steppingMove;
+		}
+
+		public List<PieceMove> findPossibleEatingMoves(GamePiece i_GamePiece)
+		{
+			List<PieceMove> possibleEatingMoves = new List<PieceMove>(2);
+			if(i_GamePiece.IsKing)
+			{
+				possibleEatingMoves.AddRange(findEatingMoves(i_GamePiece, i_GamePiece.Owner.ReverseDirection));
+			}
+			possibleEatingMoves.AddRange(findEatingMoves(i_GamePiece, i_GamePiece.Owner.Direction));
+
+			return possibleEatingMoves;
+		}
+
+		private List<PieceMove> findEatingMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection)
+		{
+			List<PieceMove> currentPieceEatingMoves = new List<PieceMove>(2);
+			PieceMove currentPieceEatingLeft = findSpecificEatingMoves(i_Piece, i_VerticalDirection, Player.eDirection.LEFT);
+			PieceMove currentPieceEatingRight = findSpecificEatingMoves(i_Piece, i_VerticalDirection, Player.eDirection.RIGHT);
+
+			if (currentPieceEatingLeft != null)
+			{
+				currentPieceEatingMoves.Add(currentPieceEatingLeft);
+			}
+			if (currentPieceEatingRight != null)
+			{
+				currentPieceEatingMoves.Add(currentPieceEatingRight);
+			}
+
+			return currentPieceEatingMoves;
+		}
+
+		private PieceMove findSpecificEatingMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
+		{
+			PieceMove EatingMove = null;
+			int pieceToEatRow = i_Piece.Location.Y + (int)i_VerticalDirection;
+			int pieceToEatCol = i_Piece.Location.X + (int)i_HorizontalDirection;
+			if (isCoordinateInBoard(pieceToEatRow, pieceToEatCol))
+			{
+				Player leftSquareOwner = getSquareOwnership(pieceToEatRow, pieceToEatCol);
+				if (leftSquareOwner != null && leftSquareOwner != i_Piece.Owner)
+				{
+					int squareToJumpToRow = pieceToEatRow + (int)i_VerticalDirection;
+					int squareToJumpToCol = pieceToEatCol + (int)i_HorizontalDirection;
+					if (isCoordinateInBoard(squareToJumpToRow, squareToJumpToCol))
+					{
+						if (getSquareOwnership(squareToJumpToRow, squareToJumpToCol) == null)
+						{
+							Point destination = new Point(squareToJumpToCol, squareToJumpToRow);
+							EatingMove = new PieceMove(i_Piece.Location, destination);
+						}
+					}
+				}
+			}
+			return EatingMove;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+		public bool isFirstActionLegal(GamePiece i_Piece, Point i_NewLocation, out bool o_HasEaten, out GamePiece o_EatenPiece)
 		{
 			bool isLegalMove = false;
 			bool isLegalEat = false;
@@ -24,54 +146,55 @@ namespace B18_Ex02_Data
 
 			if (i_Piece.IsKing)
 			{
-				isLegalMove = isAllowedMove(i_Piece.Location, i_Piece.Owner.ReverseDirection, i_NewLocation);
-				isLegalEat = isAllowedEat(i_Piece, i_Piece.Owner.ReverseDirection, i_NewLocation, out o_EatenPiece);
+				isLegalMove = isAllowedStepByInput(i_Piece.Location, i_Piece.Owner.ReverseDirection, i_NewLocation);
+				isLegalEat = isAllowedEatByInput(i_Piece, i_Piece.Owner.ReverseDirection, i_NewLocation, out o_EatenPiece);
 			}
-			isLegalMove = isLegalMove || isAllowedMove(i_Piece.Location, i_Piece.Owner.Direction, i_NewLocation);
-			isLegalEat = isLegalEat || isAllowedEat(i_Piece, i_Piece.Owner.Direction, i_NewLocation, out o_EatenPiece);
+			isLegalMove = isLegalMove || isAllowedStepByInput(i_Piece.Location, i_Piece.Owner.Direction, i_NewLocation);
+			isLegalEat = isLegalEat || isAllowedEatByInput(i_Piece, i_Piece.Owner.Direction, i_NewLocation, out o_EatenPiece);
 			o_HasEaten = isLegalEat;
 			return isLegalEat || isLegalMove;
 		}
 
-		public bool isLegalContinuationAction(GamePiece i_Piece, Point i_NewLocation, out GamePiece o_EatenPiece)
+		public bool isContinuationActionLegal(GamePiece i_Piece, Point i_NewLocation, out GamePiece o_EatenPiece)
 		{
 			bool isLegalEat = false;
 			o_EatenPiece = null;
 
 			if (i_Piece.IsKing)
 			{
-				isLegalEat = isAllowedEat(i_Piece, i_Piece.Owner.ReverseDirection, i_NewLocation, out o_EatenPiece);
+				isLegalEat = isAllowedEatByInput(i_Piece, i_Piece.Owner.ReverseDirection, i_NewLocation, out o_EatenPiece);
 			}
-			isLegalEat = isLegalEat || isAllowedEat(i_Piece, i_Piece.Owner.Direction, i_NewLocation, out o_EatenPiece);
+			isLegalEat = isLegalEat || isAllowedEatByInput(i_Piece, i_Piece.Owner.Direction, i_NewLocation, out o_EatenPiece);
 			return isLegalEat;
 		}
 
-		private bool isAllowedMove(Point i_CurrentLocation, Player.eDirection i_VerticalDirection, Point i_NewLocation)
+		private bool isAllowedStepByInput(Point i_CurrentLocation, Player.eDirection i_VerticalDirection, Point i_NewLocation)
 		{
 			bool isAllowed = false;
-			if (isLegalBoardLocation(i_NewLocation.Y, i_NewLocation.X))
+			if (isCoordinateInBoard(i_NewLocation.Y, i_NewLocation.X))
 			{
-				if (checkSquareOwnership(i_NewLocation.Y, i_NewLocation.X) == null)
+				if (getSquareOwnership(i_NewLocation.Y, i_NewLocation.X) == null)
 				{
 					Point checkIfAllowed = new Point(i_CurrentLocation.X, i_CurrentLocation.Y);
 					checkIfAllowed.Y += (int)i_VerticalDirection;
 					if (checkIfAllowed.Y == i_NewLocation.Y)
 					{
-						isAllowed = checkIfAllowed.X + (int)Player.eDirection.LEFT == i_NewLocation.X || checkIfAllowed.X + (int)Player.eDirection.RIGHT == i_NewLocation.X;
+						isAllowed = checkIfAllowed.X + (int)Player.eDirection.LEFT == i_NewLocation.X 
+								|| checkIfAllowed.X + (int)Player.eDirection.RIGHT == i_NewLocation.X;
 					}
 				}
 			}
 			return isAllowed;
 		}
 
-		private bool isAllowedEat(GamePiece i_Piece, Player.eDirection i_VerticalDirection, Point i_NewLocation, out GamePiece o_EatenPiece)
+		private bool isAllowedEatByInput(GamePiece i_Piece, Player.eDirection i_VerticalDirection, Point i_NewLocation, out GamePiece o_EatenPiece)
 		{
 			bool isAllowed = false;
 			o_EatenPiece = null;
 
-			if (isLegalBoardLocation(i_NewLocation.Y, i_NewLocation.X))
+			if (isCoordinateInBoard(i_NewLocation.Y, i_NewLocation.X))
 			{
-				if (checkSquareOwnership(i_NewLocation.Y, i_NewLocation.X) == null)
+				if (getSquareOwnership(i_NewLocation.Y, i_NewLocation.X) == null)
 				{
 					int rowDiff = i_NewLocation.Y - i_Piece.Location.Y;
 					int colDiff = i_NewLocation.X - i_Piece.Location.X;
@@ -83,9 +206,9 @@ namespace B18_Ex02_Data
 							colDiff /= 2;
 							int eatenSquareRow = i_Piece.Location.Y + rowDiff;
 							int eatenSquareCol = i_Piece.Location.X + colDiff;
-							if (checkSquareOwnership(eatenSquareRow, eatenSquareCol) != null)
+							if (getSquareOwnership(eatenSquareRow, eatenSquareCol) != null)
 							{
-								if (checkSquareOwnership(eatenSquareRow, eatenSquareCol) != i_Piece.Owner)
+								if (getSquareOwnership(eatenSquareRow, eatenSquareCol) != i_Piece.Owner)
 								{
 									o_EatenPiece = m_Board[eatenSquareRow, eatenSquareCol];
 									isAllowed = true;
@@ -103,9 +226,9 @@ namespace B18_Ex02_Data
 			bool hasLegalEatingMove = false;
 			if (i_Piece.IsKing)
 			{
-				hasLegalEatingMove = checkManEatingMoves(i_Piece, i_Piece.Owner.ReverseDirection);
+				hasLegalEatingMove = checkIfManCanEat(i_Piece, i_Piece.Owner.ReverseDirection);
 			}
-			hasLegalEatingMove = hasLegalEatingMove || checkManEatingMoves(i_Piece, i_Piece.Owner.Direction);
+			hasLegalEatingMove = hasLegalEatingMove || checkIfManCanEat(i_Piece, i_Piece.Owner.Direction);
 			return hasLegalEatingMove;
 		}
 
@@ -116,43 +239,43 @@ namespace B18_Ex02_Data
 			bool canManEat = false;
 			if(i_Piece.IsKing)
 			{
-				hasLegalMove = checkManMoves(i_Piece, i_Piece.Owner.ReverseDirection, out canKingEat);
+				hasLegalMove = canManMoveForward(i_Piece, i_Piece.Owner.ReverseDirection, out canKingEat);
 			}
-			hasLegalMove = hasLegalMove || checkManMoves(i_Piece, i_Piece.Owner.Direction, out canManEat);
+			hasLegalMove = hasLegalMove || canManMoveForward(i_Piece, i_Piece.Owner.Direction, out canManEat);
 			o_CanEat = canManEat || canKingEat;
 			return hasLegalMove;
 
 		}
 
-		private bool checkManMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection, out bool o_CanEat)
+		private bool canManMoveForward(GamePiece i_Piece, Player.eDirection i_VerticalDirection, out bool o_CanEat)
 		{
 			bool canMove = false;
-			canMove = o_CanEat = checkManEatingMoves(i_Piece, i_VerticalDirection);
-			canMove = canMove || checkManNormalMoves(i_Piece, i_VerticalDirection);
+			canMove = o_CanEat = checkIfManCanEat(i_Piece, i_VerticalDirection);
+			canMove = canMove || checkManSteppingForwardMoves(i_Piece, i_VerticalDirection);
 			return canMove;
 		}
 
-		private bool checkManEatingMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection)
+		private bool checkIfManCanEat(GamePiece i_Piece, Player.eDirection i_VerticalDirection)
 		{
-			return checkEat(i_Piece, i_VerticalDirection, Player.eDirection.LEFT) ||
-					checkEat(i_Piece, i_VerticalDirection, Player.eDirection.RIGHT);
+			return checkIfCurrentPieceCanEat(i_Piece, i_VerticalDirection, Player.eDirection.LEFT) ||
+					checkIfCurrentPieceCanEat(i_Piece, i_VerticalDirection, Player.eDirection.RIGHT);
 		}
 
-		private bool checkEat(GamePiece i_Piece, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
+		private bool checkIfCurrentPieceCanEat(GamePiece i_Piece, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
 		{
 			int pieceToEatRow = i_Piece.Location.Y + (int)i_VerticalDirection;
 			int pieceToEatCol = i_Piece.Location.X + (int)i_HorizontalDirection;
 			bool canEat = false;
-			if (isLegalBoardLocation(pieceToEatRow, pieceToEatCol))
+			if (isCoordinateInBoard(pieceToEatRow, pieceToEatCol))
 			{
-				Player leftSquareOwner = checkSquareOwnership(pieceToEatRow, pieceToEatCol);
+				Player leftSquareOwner = getSquareOwnership(pieceToEatRow, pieceToEatCol);
 				if (leftSquareOwner != null && leftSquareOwner != i_Piece.Owner)
 				{
 					int squareToJumpToRow = pieceToEatRow + (int)i_VerticalDirection;
 					int squareToJumpToCol = pieceToEatCol + (int)i_HorizontalDirection;
-					if (isLegalBoardLocation(squareToJumpToRow, squareToJumpToCol))
+					if (isCoordinateInBoard(squareToJumpToRow, squareToJumpToCol))
 					{
-						if (checkSquareOwnership(squareToJumpToRow, squareToJumpToCol) == null)
+						if (getSquareOwnership(squareToJumpToRow, squareToJumpToCol) == null)
 						{
 							canEat = true;
 						}
@@ -162,21 +285,21 @@ namespace B18_Ex02_Data
 			return canEat;
 		}
 
-		private bool checkManNormalMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection)
+		private bool checkManSteppingForwardMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection)
 		{
-			return checkMove(i_Piece.Location, i_VerticalDirection, Player.eDirection.RIGHT) || 
-					checkMove(i_Piece.Location, i_VerticalDirection, Player.eDirection.LEFT);
+			return checkIfPieceCanStepForward(i_Piece.Location, i_VerticalDirection, Player.eDirection.RIGHT) || 
+					checkIfPieceCanStepForward(i_Piece.Location, i_VerticalDirection, Player.eDirection.LEFT);
 		}
 
-		private bool checkMove(Point i_Location, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
+		private bool checkIfPieceCanStepForward(Point i_Location, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
 		{
 			int row = i_Location.Y + (int)i_VerticalDirection;
 			int col = i_Location.X + (int)i_HorizontalDirection;
 
-			return isLegalBoardLocation(row,col) && checkSquareOwnership(row, col) == null;
+			return isCoordinateInBoard(row,col) && getSquareOwnership(row, col) == null;
 		}
 
-		private Player checkSquareOwnership(int i_Row, int i_Col)
+		private Player getSquareOwnership(int i_Row, int i_Col)
 		{
 			Player owner = null;
 			if (m_Board[i_Row, i_Col] != null)
@@ -186,7 +309,7 @@ namespace B18_Ex02_Data
 			return owner;
 		}
 
-		private bool isLegalBoardLocation(int i_Row, int i_Col)
+		private bool isCoordinateInBoard(int i_Row, int i_Col)
 		{
 			return !(i_Col < 0 || i_Col >= m_BoardSize || i_Row < 0 || i_Row >= m_BoardSize);
 		}

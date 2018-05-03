@@ -22,8 +22,13 @@ namespace B18_Ex02_Game
 			game.PrintBoard();
 			while (true)
 			{
-				game.PlayCurrentTurn();
+				game.Test();
+				game.PlayCurrentTurn(); 
 			}
+			//Needs to be continue
+
+			//Console.WriteLine("GAME IS OVER");
+
 		}
 	}
 }

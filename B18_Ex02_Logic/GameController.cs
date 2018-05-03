@@ -11,18 +11,25 @@ namespace B18_Ex02_Game_Controller
 		private ConsoleInterface m_View = new ConsoleInterface();
 		private Game m_Model = new Game();
 
-		public void PlayCurrentTurn()
+		public void Test()
+		{
+			m_Model.FindPlayerMoves();
+		}
+
+		public bool PlayCurrentTurn()
 		{
 			Point source, destination;
 			bool needsToEat;
 			bool hasEaten;
+			bool isPlayerMoved = false;
 			if (m_Model.CanPlayerMove(out needsToEat))
 			{
+				isPlayerMoved = true;
 				getPlayerInputForFirstTurn(out source, out destination);
 				while (!m_Model.FirstMoveInTurn(source, destination, needsToEat, out hasEaten))
 				{
 					PrintBoard();
-					m_View.PrintError(ConsoleInterface.eErrors.InvalidInput);
+					m_View.PrintError(ConsoleInterface.eErrors.InvalidPieceMove);
 					getPlayerInputForFirstTurn(out source, out destination);
 				}
 				m_View.LastAction = string.Format("{0}>{1}", locationToString(source), locationToString(destination));
@@ -35,7 +42,7 @@ namespace B18_Ex02_Game_Controller
 						while (!m_Model.ContinuesMove(destination))
 						{
 							PrintBoard();
-							m_View.PrintError(ConsoleInterface.eErrors.InvalidInput);
+							m_View.PrintError(ConsoleInterface.eErrors.InvalidPieceMove);
 							getPlayerInputForContinuousTurns(m_Model.GetCurrentPieceLocation(), out destination);
 						}
 						m_View.LastAction = string.Format("{0}>{1}", locationToString(source), locationToString(destination));
@@ -44,6 +51,7 @@ namespace B18_Ex02_Game_Controller
 				}
 			}
 			m_Model.EndTurn();
+			return isPlayerMoved;
 		}
 
 		private void afterMoveActions()
@@ -64,7 +72,7 @@ namespace B18_Ex02_Game_Controller
 			System.Text.RegularExpressions.Regex checkInput = new System.Text.RegularExpressions.Regex(regex);
 			while (!checkInput.IsMatch(playerInput))
 			{
-				Console.WriteLine("Please enter a valid input: ");
+				m_View.PrintError(ConsoleInterface.eErrors.InvalidMoveInput);
 				playerInput = Console.ReadLine();
 			}
 			stringToLocations(playerInput, out o_Source, out o_Destination);
@@ -81,7 +89,7 @@ namespace B18_Ex02_Game_Controller
 			System.Text.RegularExpressions.Regex checkInput = new System.Text.RegularExpressions.Regex(regex);
 			while (!checkInput.IsMatch(playerInput))
 			{
-				Console.WriteLine("Please enter a valid input: ");
+				m_View.PrintError(ConsoleInterface.eErrors.InvalidMoveInput);
 				playerInput = Console.ReadLine();
 			}
 			stringToLocations(playerInput, out i_Location, out o_Destination);
@@ -96,7 +104,7 @@ namespace B18_Ex02_Game_Controller
 		public void InitializePlayers()
 		{
 			m_Model.InitializePlayerOne(m_View.askPlayerName(m_Model.PlayerTurn));
-			m_Model.InitializePlayerTwo(m_View.askPlayerName(m_Model.otherPlayer()));
+			m_Model.InitializePlayerTwo(m_View.askPlayerName(m_Model.otherPlayer()),false); //TODO computer initialization.
 		}
 
 		public void InitializeBoard()
@@ -130,6 +138,17 @@ namespace B18_Ex02_Game_Controller
 		private string locationToString(Point i_Location)
 		{
 			return string.Format("{0}{1}", (char)(i_Location.X + 'A'), (char)(i_Location.Y + 'a'));
+		}
+
+		public bool IsGameOver()
+		{
+			bool isGameOver = false;
+			if (m_Model.GetCurrentPlayerNumberOfPieces() == 0)
+			{
+				isGameOver = true;
+			}
+
+			return isGameOver;
 		}
 	}
 }
