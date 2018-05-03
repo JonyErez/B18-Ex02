@@ -9,8 +9,7 @@ namespace B18_Ex02_Data
 		private GameBoard m_Board;
 		private Player[] m_Players = new Player[2];
 		private int m_PlayerTurn = 0;
-		private GamePiece m_PieceToMove;
-		private Point m_SquareToMoveTo;
+		private GamePiece m_PieceToMove = null;
 		private List<PieceMove> m_CurrentTurnPossibleMoves = new List<PieceMove>(2);
 
 		public List<string> GetCurrentMoves()
@@ -39,7 +38,7 @@ namespace B18_Ex02_Data
 				return m_Players[i_PlayerNumber].GamePieceSymbol;
 		}
 
-		public int PlayerTurn
+		public int WhosPlayersTurn
 		{
 			get
 			{
@@ -47,8 +46,9 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public bool FindPlayerMoves()
+		public bool FindPlayersFirstMoves()
 		{
+			m_CurrentTurnPossibleMoves.Clear();
 			foreach (GamePiece currentPiece in m_Players[m_PlayerTurn].GamePieces)
 			{
 				m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(currentPiece));
@@ -64,80 +64,50 @@ namespace B18_Ex02_Data
 			return m_CurrentTurnPossibleMoves.Count != 0;
 		}
 
-		public bool CanPlayerMove(out bool o_canEat)
+		public bool FindPlayersContinuationMoves()
 		{
-			bool canMove = false;
-			bool canEat = false;
-			o_canEat = false;
-			foreach (GamePiece currentPiece in m_Players[m_PlayerTurn].GamePieces)
+			m_CurrentTurnPossibleMoves.Clear();
+			m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(m_PieceToMove));
+
+			if (m_CurrentTurnPossibleMoves.Count != 0)
 			{
-				canMove = m_Board.hasLegalMoves(currentPiece, out canEat) || canMove;
-				o_canEat = o_canEat || canEat;
+				m_PieceToMove = null;
 			}
 
-			return canMove;
+			return m_CurrentTurnPossibleMoves.Count != 0;
 		}
 
-		public bool FirstMoveInTurn(Point i_Location, Point i_Destination, bool i_NeedsToEat,out bool o_HasEaten)
+		public void MakePlayerMove(int i_PieceMoveIndex)
 		{
-			bool canMove = false;
-			o_HasEaten = false;
-			GamePiece eatenPiece = null;
-
-			m_PieceToMove = m_Board.Board[i_Location.Y, i_Location.X];
-			if (m_PieceToMove != null)
+			if (m_PieceToMove == null)
 			{
-				if (m_Players[m_PlayerTurn] == m_PieceToMove.Owner)
-				{
-					if (m_Board.isFirstActionLegal(m_PieceToMove, i_Destination, out o_HasEaten, out eatenPiece))
-					{
-						if (o_HasEaten == i_NeedsToEat)
-						{
-							canMove = true;
-							movePiece(i_Destination);
-							if (o_HasEaten)
-							{
-								eatPiece(eatenPiece);
-							}
-						}
-					}
-				}
+				m_PieceToMove = m_Board.Board[m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Location.Y, m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Location.X];
 			}
-			return canMove;
-		}
-
-		public bool HasAnotherLegalMove()
-		{
-			return m_Board.hasLegalEatingMoves(m_PieceToMove);
-		}
-
-		public bool ContinuesMove(Point i_Destination)
-		{
-			bool canMove = false;
-
-			if (m_Board.isContinuationActionLegal(m_PieceToMove, i_Destination, out GamePiece o_EatenPiece))
+			if (m_CurrentTurnPossibleMoves[i_PieceMoveIndex].DoesEat)
 			{
-				canMove = true;
-				movePiece(i_Destination);
-				eatPiece(o_EatenPiece);
+				eatPiece(m_Board.findEatenPiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex]));
 			}
-			return canMove;
+			movePiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Destination);
+
 		}
 
 		public void CheckAndMakeKing()
 		{
-			if(m_PieceToMove.Owner == m_Players[0])
+			if (m_PieceToMove != null)
 			{
-				if(m_PieceToMove.Location.Y == m_Board.Size - 1)
+				if (m_PieceToMove.Owner == m_Players[0])
 				{
-					m_PieceToMove.MakeKing();
+					if (m_PieceToMove.Location.Y == m_Board.Size - 1)
+					{
+						m_PieceToMove.MakeKing();
+					}
 				}
-			}
-			else
-			{
-				if (m_PieceToMove.Location.Y == 0)
+				else
 				{
-					m_PieceToMove.MakeKing();
+					if (m_PieceToMove.Location.Y == 0)
+					{
+						m_PieceToMove.MakeKing();
+					}
 				}
 			}
 		}
@@ -157,6 +127,7 @@ namespace B18_Ex02_Data
 
 		public void EndTurn()
 		{
+			m_PieceToMove = null;
 			m_PlayerTurn = otherPlayer();
 		}
 

@@ -17,7 +17,7 @@ namespace B18_Ex02_Interface
 			{
 				Console.WriteLine("{0}'s move was ({1}): {2}", i_PreviousPlayerName, i_PreviousPlayerSymbol, m_LastAction);
 			}
-			Console.WriteLine("{0}'s turn ({1}): ", i_CurrentPlayerName, i_CurrentPlayerSymbol);
+			Console.Write("{0}'s turn ({1}): ", i_CurrentPlayerName, i_CurrentPlayerSymbol);
 		}
 
 		public string askPlayerName(int i_PlayerNumber)
@@ -80,6 +80,20 @@ namespace B18_Ex02_Interface
 			}
 		}
 
+		public int AskHowManyPlayers()
+		{
+			int amountOfPlayers = 0;
+			Console.Write("How many players will be playing? (1 or 2): ");
+			while (!int.TryParse(Console.ReadLine(), out amountOfPlayers))
+			{
+				if (amountOfPlayers != 1 && amountOfPlayers != 2)
+				{
+					PrintError(eErrors.InvalidAmountOfPlayers);
+				}
+			}
+			return amountOfPlayers;
+		}
+
 		public void PrintBoard()
 		{
 			int boardSize = m_GameBoard.GetLength(0);
@@ -128,7 +142,7 @@ namespace B18_Ex02_Interface
 			Console.WriteLine(currentRow);
 		}
 
-		public string getPlayerInput(List<string> i_LegalInputs)
+		public int getPlayerInput(List<string> i_LegalInputs)
 		{
 			string playerInput;
 
@@ -139,10 +153,12 @@ namespace B18_Ex02_Interface
 				playerInput = Console.ReadLine();
 			}
 
-			return playerInput;
+			m_LastAction = playerInput;
+
+			return i_LegalInputs.IndexOf(playerInput);
 		}
 
-		public enum eErrors { InvalidBoardInput = 1, InvalidMoveInput = 2, InvalidPieceMove = 3}
+		public enum eErrors { InvalidBoardInput = 1, InvalidMoveInput = 2, InvalidPieceMove = 3, InvalidAmountOfPlayers = 4}
 
 		public void PrintError(eErrors i_Error)
 		{
@@ -158,6 +174,10 @@ Please enter a valid input in the following format: COLrow>COLrow"));
 					break;
 				case eErrors.InvalidPieceMove:
 					Console.WriteLine("Invalid piece move!");
+					break;
+				case eErrors.InvalidAmountOfPlayers:
+					Console.WriteLine(@"Invalid number of players!
+Please enter a valid number of players (1 or 2): ");
 					break;
 			}
 		}

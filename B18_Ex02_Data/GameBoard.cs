@@ -15,17 +15,6 @@ namespace B18_Ex02_Data
 			m_Board = new GamePiece[i_BoardSize, i_BoardSize];
 		}
 
-		//public List<PieceMove> FindPossibleMoves(GamePiece i_GamePiece)
-		//{
-		//	List<PieceMove> currentPiecePossibleMoves = new List<PieceMove>(4);
-		//	currentPiecePossibleMoves.AddRange(findPossibleEatingMoves(i_GamePiece));
-		//	if(currentPiecePossibleMoves.Count == 0)
-		//	{
-		//		currentPiecePossibleMoves.AddRange(findPossibleSteppingForwardMoves(i_GamePiece));
-		//	}
-		//	return currentPiecePossibleMoves;
-		//}
-
 		public List<PieceMove> findPossibleSteppingForwardMoves(GamePiece i_GamePiece)
 		{
 			List<PieceMove> possibleSteppingForwardMoves = new List<PieceMove>(2);
@@ -65,7 +54,7 @@ namespace B18_Ex02_Data
 			if(isCoordinateInBoard(row, col) && getSquareOwnership(row, col) == null)
 			{
 				Point destination = new Point(col, row);
-				steppingMove = new PieceMove(i_Location, destination);
+				steppingMove = new PieceMove(i_Location, destination, false);
 			}
 			return steppingMove;
 		}
@@ -117,7 +106,7 @@ namespace B18_Ex02_Data
 						if (getSquareOwnership(squareToJumpToRow, squareToJumpToCol) == null)
 						{
 							Point destination = new Point(squareToJumpToCol, squareToJumpToRow);
-							EatingMove = new PieceMove(i_Piece.Location, destination);
+							EatingMove = new PieceMove(i_Piece.Location, destination, true);
 						}
 					}
 				}
@@ -125,7 +114,14 @@ namespace B18_Ex02_Data
 			return EatingMove;
 		}
 
-
+		public GamePiece findEatenPiece(PieceMove i_EatingMove)
+		{
+			Point eatenPieceLocation;
+			Point difference = i_EatingMove.Destination - i_EatingMove.Location;
+			difference = difference / 2;
+			eatenPieceLocation = i_EatingMove.Location - difference;
+			return m_Board[eatenPieceLocation.Y, eatenPieceLocation.X];
+		}
 
 
 
@@ -298,6 +294,8 @@ namespace B18_Ex02_Data
 
 			return isCoordinateInBoard(row,col) && getSquareOwnership(row, col) == null;
 		}
+
+
 
 		private Player getSquareOwnership(int i_Row, int i_Col)
 		{

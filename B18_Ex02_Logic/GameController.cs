@@ -11,59 +11,35 @@ namespace B18_Ex02_Game_Controller
 		private ConsoleInterface m_View = new ConsoleInterface();
 		private Game m_Model = new Game();
 
-		public void Test()
+		public void PlayCurrentTurn()
 		{
-			m_Model.FindPlayerMoves();
-		}
 
-		public bool PlayCurrentTurn()
-		{
-			Point source, destination;
-			bool needsToEat;
-			bool hasEaten;
-			bool isPlayerMoved = false;
-			if (m_Model.CanPlayerMove(out needsToEat))
+			if (m_Model.FindPlayersFirstMoves())
 			{
-				isPlayerMoved = true;
-				getPlayerInputForFirstTurn(out source, out destination);
-				while (!m_Model.FirstMoveInTurn(source, destination, needsToEat, out hasEaten))
-				{
-					PrintBoard();
-					m_View.PrintError(ConsoleInterface.eErrors.InvalidPieceMove);
-					getPlayerInputForFirstTurn(out source, out destination);
-				}
-				m_View.LastAction = string.Format("{0}>{1}", locationToString(source), locationToString(destination));
+				m_View.TurnInformation(m_Model.GetPlayerName(m_Model.WhosPlayersTurn), m_Model.GetPlayerSymbol(m_Model.WhosPlayersTurn), m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()));
+				m_Model.MakePlayerMove(m_View.getPlayerInput(m_Model.GetCurrentMoves()));
 				afterMoveActions();
-				if (hasEaten)
+				while (m_Model.FindPlayersContinuationMoves())
 				{
-					while (m_Model.HasAnotherLegalMove())
-					{
-						getPlayerInputForContinuousTurns(m_Model.GetCurrentPieceLocation(), out destination);
-						while (!m_Model.ContinuesMove(destination))
-						{
-							PrintBoard();
-							m_View.PrintError(ConsoleInterface.eErrors.InvalidPieceMove);
-							getPlayerInputForContinuousTurns(m_Model.GetCurrentPieceLocation(), out destination);
-						}
-						m_View.LastAction = string.Format("{0}>{1}", locationToString(source), locationToString(destination));
-						afterMoveActions();
-					}
+					m_View.TurnInformation(m_Model.GetPlayerName(m_Model.WhosPlayersTurn), m_Model.GetPlayerSymbol(m_Model.WhosPlayersTurn), m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()));
+					m_Model.MakePlayerMove(m_View.getPlayerInput(m_Model.GetCurrentMoves()));
+					afterMoveActions();
 				}
 			}
 			m_Model.EndTurn();
-			return isPlayerMoved;
+				
 		}
 
 		private void afterMoveActions()
 		{
 			m_Model.CheckAndMakeKing();
-			UpdateViewBoard();
+			UpdateBoard();
 			PrintBoard();
 		}
 
 		private void getPlayerInputForFirstTurn(out Point o_Source, out Point o_Destination)
 		{
-			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn),
+			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.WhosPlayersTurn), m_Model.GetPlayerSymbol(m_Model.WhosPlayersTurn),
 									m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()));
 			string playerInput = Console.ReadLine();
 			char maxCapital = (char)(m_Model.BoardSize + 'A' - 1);
@@ -80,8 +56,8 @@ namespace B18_Ex02_Game_Controller
 
 		private void getPlayerInputForContinuousTurns(Point i_Location, out Point o_Destination)
 		{
-			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn),
-									m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn));
+			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.WhosPlayersTurn), m_Model.GetPlayerSymbol(m_Model.WhosPlayersTurn),
+									m_Model.GetPlayerName(m_Model.WhosPlayersTurn), m_Model.GetPlayerSymbol(m_Model.WhosPlayersTurn));
 			string playerInput = Console.ReadLine();
 			char maxCapital = (char)(m_Model.BoardSize + 'A' - 1);
 			char maxLittle = (char)(m_Model.BoardSize + 'a' - 1);
@@ -101,24 +77,47 @@ namespace B18_Ex02_Game_Controller
 			o_Destination = new Point(i_PlayerInput[3] - 'A', i_PlayerInput[4] - 'a');
 		}
 
-		public void InitializePlayers()
+		public void InitializeGame()
 		{
-			m_Model.InitializePlayerOne(m_View.askPlayerName(m_Model.PlayerTurn));
-			m_Model.InitializePlayerTwo(m_View.askPlayerName(m_Model.otherPlayer()),false); //TODO computer initialization.
+			int boardSize;
+			bool vsComputer;
+			InitializePlayerOne();
+			boardSize = m_View.AskGameBoardSize();
+			vsComputer = m_View.AskHowManyPlayers() == 1;
+			InitializePlayerTwo(vsComputer);
+			InitializeBoard(boardSize);
+			InitializeViewBoard();
 		}
 
-		public void InitializeBoard()
+		private void InitializePlayerOne()
 		{
-			m_Model.InitializeBoard(m_View.AskGameBoardSize());
+			m_Model.InitializePlayerOne(m_View.askPlayerName(m_Model.WhosPlayersTurn));
 		}
 
-		public void InitializeViewBoard()
+		private void InitializePlayerTwo(bool isComputer)
+		{
+			if (!isComputer)
+			{
+				m_Model.InitializePlayerTwo(m_View.askPlayerName(m_Model.otherPlayer()), isComputer);
+			}
+			else
+			{
+				m_Model.InitializePlayerTwo("CheckersAI", isComputer);
+			}
+		}
+
+		private void InitializeBoard(int gameBoardSize)
+		{
+			m_Model.InitializeBoard(gameBoardSize);
+		}
+
+		private void InitializeViewBoard()
 		{
 			m_View.GameBoard = new char[m_Model.BoardSize,m_Model.BoardSize];
-			UpdateViewBoard();
+			UpdateBoard();
 		}
 
-		public void UpdateViewBoard()
+		public void UpdateBoard()
 		{
 			for (int row = 0; row < m_View.GameBoardSize; row++)
 			{

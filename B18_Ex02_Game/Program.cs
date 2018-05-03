@@ -16,13 +16,12 @@ namespace B18_Ex02_Game
 		public static void RunGame()
 		{
 			GameController game = new GameController();
-			game.InitializePlayers();
-			game.InitializeBoard();
-			game.InitializeViewBoard();
-			game.PrintBoard();
+
+			game.InitializeGame();
 			while (true)
 			{
-				game.Test();
+				game.UpdateBoard();
+				game.PrintBoard();
 				game.PlayCurrentTurn(); 
 			}
 			//Needs to be continue
