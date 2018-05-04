@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Collections.Generic;
 using Ex02.ConsoleUtils;
 using B18_Ex02_Data;
 
@@ -26,13 +26,13 @@ namespace B18_Ex02_Interface
 
 			do
 			{
-				Console.WriteLine(
-	string.Format(@"Do you wish to play another round (Y\N)? "));
+				Console.Write(
+	string.Format(@"{0}Do you wish to play another round (Y\N)? ", System.Environment.NewLine));
 
 				while (!char.TryParse(Console.ReadLine(), out playerInputForAnotherRound))
 				{
 					PrintError(eErrors.InvalidInput);
-					Console.WriteLine(
+					Console.Write(
 		string.Format(@"Do you wish to play another round (Y\N)? "));
 				}
 			}
@@ -54,13 +54,14 @@ namespace B18_Ex02_Interface
 		public		void	PrintGameOver(string i_PlayerOneName, uint i_PlayerOneScore, string i_PlayerTwoName, uint i_PlayerTwoScore)
 		{
 			Console.WriteLine(string.Format(
-@"The current scores are:
+@"{4}The current scores are:
 {0}'s score is: {1}
 {2}'s score is: {3}", 
 i_PlayerOneName, 
 i_PlayerOneScore, 
 i_PlayerTwoName, 
-i_PlayerTwoScore));
+i_PlayerTwoScore,
+System.Environment.NewLine));
 		}
 
 		public		void	TurnInformation(string i_CurrentPlayerName, char i_CurrentPlayerSymbol, string i_PreviousPlayerName, char i_PreviousPlayerSymbol)
@@ -75,8 +76,18 @@ i_PlayerTwoScore));
 
 		public		string	AskPlayerName(int i_PlayerNumber)
 		{
-			Console.WriteLine("Please enter player {0}s name: ", i_PlayerNumber == 0 ? "one" : "two");
-			return Console.ReadLine();
+			string playerName;
+			System.Text.RegularExpressions.Regex nameValidation = new System.Text.RegularExpressions.Regex(@"^[a-zA-Z]{1,20}$");
+			Console.Write("Please enter player {0}s name (english letters only): ", i_PlayerNumber == 0 ? "one" : "two");
+			playerName = Console.ReadLine();
+			while (!nameValidation.IsMatch(playerName))
+			{
+				PrintError(eErrors.InvalidInput);
+				Console.Write("Please enter player {0}s name (english letters only): ", i_PlayerNumber == 0 ? "one" : "two");
+				playerName = Console.ReadLine();
+			}
+
+			return playerName;
 		}
 
 		public		int		AskGameBoardSize()
@@ -84,7 +95,7 @@ i_PlayerTwoScore));
 			int gameBoardSize;
 			bool legalValue;
 
-			Console.WriteLine("Please enter the game board size (6, 8, 10): ");
+			Console.Write("Please enter the game board size (6, 8, 10): ");
 			legalValue = int.TryParse(Console.ReadLine(), out gameBoardSize);
 			while (!legalValue || (gameBoardSize != 6 && gameBoardSize != 8 && gameBoardSize != 10))
 			{
@@ -137,10 +148,23 @@ i_PlayerTwoScore));
 		public		int		AskHowManyPlayers()
 		{
 			int amountOfPlayers = 0;
+			bool legalAmountOfPlayers = false;
+
 			Console.Write("How many players will be playing? (1 or 2): ");
-			while (!int.TryParse(Console.ReadLine(), out amountOfPlayers))
+			while (!legalAmountOfPlayers)
 			{
-				if (amountOfPlayers != 1 && amountOfPlayers != 2)
+				if (int.TryParse(Console.ReadLine(), out amountOfPlayers))
+				{
+					if (amountOfPlayers != 1 && amountOfPlayers != 2)
+					{
+						PrintError(eErrors.InvalidAmountOfPlayers);
+					}
+					else
+					{
+						legalAmountOfPlayers = true;
+					}
+				}
+				else
 				{
 					PrintError(eErrors.InvalidAmountOfPlayers);
 				}
@@ -224,18 +248,18 @@ i_PlayerTwoScore));
 			switch (i_Error)
 			{
 				case eErrors.InvalidBoardInput:
-Console.WriteLine(string.Format(@"Invalid board input!
+Console.Write(string.Format(@"Invalid board input!
 Please enter a valid game board size(6, 8, 10): "));
 					break;
 				case eErrors.InvalidMoveInput:
-Console.WriteLine(string.Format(@"Invalid move input!
-Please enter a valid input in the following format: COLrow>COLrow"));
+Console.Write(string.Format(@"Invalid move input!
+Please enter a valid input (COLrow>COLrow): "));
 					break;
 				case eErrors.InvalidPieceMove:
 					Console.WriteLine("Invalid piece move!");
 					break;
 				case eErrors.InvalidAmountOfPlayers:
-					Console.WriteLine(@"Invalid number of players!
+					Console.Write(@"Invalid number of players!
 Please enter a valid number of players (1 or 2): ");
 					break;
 				case eErrors.InvalidInput:
@@ -246,7 +270,7 @@ Please enter a valid number of players (1 or 2): ");
 
 		public		void	EndGame()
 		{
-			Console.WriteLine("Game Over!{0}Thanks you for playing!{0}Press 'Enter' to exit!", System.Environment.NewLine);
+			Console.WriteLine("{0}Game Over!{0}Thanks you for playing!{0}Press 'Enter' to exit!", System.Environment.NewLine);
 			Console.ReadLine();
 		}
 	}

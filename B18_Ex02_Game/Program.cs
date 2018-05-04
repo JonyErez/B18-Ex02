@@ -14,22 +14,22 @@ namespace B18_Ex02_Game
 
 		public	static	void	RunGame()
 		{
-			GameController game = new GameController();
+			GameController checkersGame = new GameController();
 
-			game.InitializeGame();
+			checkersGame.InitializeGame();
 			do
 			{
 				do
 				{
-					game.PrintBoard();
-					game.PlayCurrentTurn();
+					checkersGame.PrintBoard();
+					checkersGame.PlayCurrentTurn();
 				}
-				while (!game.IsGameOver());
-				game.GameOver();
-				game.IsAnotherRound();
+				while (!checkersGame.IsGameOver());
+				checkersGame.GameOver();
+				checkersGame.IsAnotherRound();
 			}
-			while (game.PlayAnotherRound);
-			game.EndGame();
+			while (checkersGame.PlayAnotherRound);
+			checkersGame.EndGame();
 		}
 	}
 }

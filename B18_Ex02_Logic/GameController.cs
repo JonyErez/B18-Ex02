@@ -165,9 +165,10 @@ namespace B18_Ex02_Game_Controller
 
 		public		void	InitializeGame()
 		{
-			int boardSize;
-			bool vsComputer;
+			int		boardSize;
+			bool	vsComputer;
 
+			System.Console.Title = "Checkers Game - By Niv Dunay and Jonathan Erez";
 			InitializePlayerOne();
 			boardSize = m_View.AskGameBoardSize();
 			vsComputer = m_View.AskHowManyPlayers() == 1;
