@@ -18,23 +18,23 @@ namespace B18_Ex02_Interface
 			do
 			{
 				Console.WriteLine(
-	String.Format(@"Do you wish to play another round (Y\N)? "));
+	string.Format(@"Do you wish to play another round (Y\N)? "));
 
 				while (!char.TryParse(Console.ReadLine(), out playerInputForAnotherRound))
 				{
 					PrintError(eErrors.InvalidInput);
 					Console.WriteLine(
-		String.Format(@"Do you wish to play another round (Y\N)? "));
-
+		string.Format(@"Do you wish to play another round (Y\N)? "));
 				}
-			} while (!(char.ToUpper(playerInputForAnotherRound) == 'Y') && !(char.ToUpper(playerInputForAnotherRound) == 'N'));
+			}
+			while (!(char.ToUpper(playerInputForAnotherRound) == 'Y') && !(char.ToUpper(playerInputForAnotherRound) == 'N'));
 
 			return char.ToUpper(playerInputForAnotherRound) == 'Y';
 		}
 
 		public void PrintWinner(string i_Winner, char i_WinnerSymbol, uint i_WinnerScore)
 		{
-			Console.WriteLine(String.Format(@"{0} ({1}) Won! with the score of {2}.", i_Winner, i_WinnerSymbol, i_WinnerScore));
+			Console.WriteLine(string.Format(@"{0} ({1}) Won! with the score of {2}.", i_Winner, i_WinnerSymbol, i_WinnerScore));
 		}
 
 		public void PrintTie()
@@ -44,10 +44,14 @@ namespace B18_Ex02_Interface
 
 		public void PrintGameOver(string i_PlayerOneName, uint i_PlayerOneScore, string i_PlayerTwoName, uint i_PlayerTwoScore)
 		{
-			Console.WriteLine(
-String.Format(@"The current scores are:
+			Console.WriteLine(string.Format(
+@"The current scores are:
 {0}'s score is: {1}
-{2}'s score is: {3}", i_PlayerOneName, i_PlayerOneScore, i_PlayerTwoName, i_PlayerTwoScore));
+{2}'s score is: {3}", 
+i_PlayerOneName, 
+i_PlayerOneScore, 
+i_PlayerTwoName, 
+i_PlayerTwoScore));
 		}
 
 		public void TurnInformation(string i_CurrentPlayerName, char i_CurrentPlayerSymbol, string i_PreviousPlayerName, char i_PreviousPlayerSymbol)
@@ -56,6 +60,7 @@ String.Format(@"The current scores are:
 			{
 				Console.WriteLine("{0}'s move was ({1}): {2}", i_PreviousPlayerName, i_PreviousPlayerSymbol, m_LastAction);
 			}
+
 			Console.Write("{0}'s turn ({1}): ", i_CurrentPlayerName, i_CurrentPlayerSymbol);
 		}
 
@@ -77,6 +82,7 @@ String.Format(@"The current scores are:
 				PrintError(ConsoleInterface.eErrors.InvalidBoardInput);
 				legalValue = int.TryParse(Console.ReadLine(), out gameBoardSize);
 			}
+
 			return gameBoardSize;
 		}
 
@@ -130,6 +136,7 @@ String.Format(@"The current scores are:
 					PrintError(eErrors.InvalidAmountOfPlayers);
 				}
 			}
+
 			return amountOfPlayers;
 		}
 
@@ -143,7 +150,6 @@ String.Format(@"The current scores are:
 				printCurrentBoardRow(currentRow, boardSize);
 				printSeperatorLine(boardSize);
 			}
-
 		}
 
 		private void printTopRowIndicators(int i_Size)
@@ -154,7 +160,6 @@ String.Format(@"The current scores are:
 			}
 
 			Console.Write(System.Environment.NewLine);
-
 		}
 
 		private void printSeperatorLine(int boardSize)
@@ -164,9 +169,9 @@ String.Format(@"The current scores are:
 			{
 				Console.Write("====");
 			}
+
 			Console.Write("=");
 			Console.Write(System.Environment.NewLine);
-
 		}
 
 		private void printCurrentBoardRow(int i_CurrentRow, int i_Size)
@@ -177,6 +182,7 @@ String.Format(@"The current scores are:
 			{
 				currentRow.Append(string.Format("| {0} ", m_GameBoard[i_CurrentRow, i]));
 			}
+
 			currentRow.Append('|');
 			Console.WriteLine(currentRow);
 		}
@@ -204,7 +210,14 @@ String.Format(@"The current scores are:
 			return didPlayerQuit;
 		}
 
-		public enum eErrors { InvalidBoardInput = 1, InvalidMoveInput = 2, InvalidPieceMove = 3, InvalidAmountOfPlayers = 4, InvalidInput = 5}
+		public enum eErrors
+		{
+			InvalidBoardInput = 1,
+			InvalidMoveInput = 2,
+			InvalidPieceMove = 3,
+			InvalidAmountOfPlayers = 4,
+			InvalidInput = 5
+		}
 
 		public void PrintError(eErrors i_Error)
 		{

@@ -6,6 +6,9 @@ namespace B18_Ex02_Data
 {
 	public class Game
 	{
+		private const int KingScore = 4;
+		private const int PawnScore = 1;
+
 		private GameBoard m_Board;
 		private Player[] m_Players = new Player[2];
 		private int m_PlayerTurn = 0;
@@ -21,6 +24,7 @@ namespace B18_Ex02_Data
 			{
 				m_Board.Board[currentPiece.Location.Y, currentPiece.Location.X] = null;
 			}
+
 			i_Player.GamePieces.Clear();
 		}
 
@@ -28,7 +32,7 @@ namespace B18_Ex02_Data
 		{
 			clearBoard();
 			resetGameFlags();
-			m_Board.InitializeBoard(m_Players[0],m_Players[1]);
+			m_Board.InitializeBoard(m_Players[0], m_Players[1]);
 		}
 
 		private void clearBoard()
@@ -51,6 +55,7 @@ namespace B18_Ex02_Data
 			{
 				return m_didPlayerQuit;
 			}
+
 			set
 			{
 				m_didPlayerQuit = value;
@@ -63,6 +68,7 @@ namespace B18_Ex02_Data
 			{
 				return m_IsGameOver;
 			}
+
 			set
 			{
 				m_IsGameOver = value;
@@ -94,6 +100,7 @@ namespace B18_Ex02_Data
 			{
 				return m_WasPieceEaten;
 			}
+
 			set
 			{
 				m_WasPieceEaten = value;
@@ -122,6 +129,7 @@ namespace B18_Ex02_Data
 			{
 				m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(currentPiece));
 			}
+
 			if(m_CurrentTurnPossibleMoves.Count == 0)
 			{
 				foreach (GamePiece currentPiece in m_Players[i_PlayerNumber].GamePieces)
@@ -152,13 +160,14 @@ namespace B18_Ex02_Data
 			{
 				m_PieceToMove = m_Board.Board[m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Location.Y, m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Location.X];
 			}
+
 			if (m_CurrentTurnPossibleMoves[i_PieceMoveIndex].DoesEat)
 			{
 				eatPiece(m_Board.findEatenPiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex]));
 				m_WasPieceEaten = true;
 			}
-			movePiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Destination);
 
+			movePiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Destination);
 		}
 
 		public void CheckAndMakeKing()
@@ -228,7 +237,6 @@ namespace B18_Ex02_Data
 		public void InitializePlayerOne(string i_Name)
 		{
 			m_Players[0] = new Player(i_Name, 'O', 'U', Player.eDirection.DOWN, false);
-
 		}
 
 		public void InitializePlayerTwo(string i_Name, bool i_IsComputer)
@@ -270,17 +278,19 @@ namespace B18_Ex02_Data
 		public uint CalculatePlayerScore(int PlayerNumber)
 		{
 			uint playerScore = 0;
+
 			foreach (GamePiece currentPiece in m_Players[PlayerNumber].GamePieces)
 			{
 				if (currentPiece.IsKing)
 				{
-					playerScore += 4;// change the 4
+					playerScore += KingScore;
 				}
 				else
 				{
-					playerScore += 1;
+					playerScore += PawnScore;
 				}
 			}
+
 			return playerScore;
 		}
 	}

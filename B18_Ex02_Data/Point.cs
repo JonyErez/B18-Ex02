@@ -15,17 +15,17 @@ namespace B18_Ex02_Data
 			y = 0;
 		}
 
-		public static Point operator+(Point point1, Point point2)
+		public static Point operator +(Point point1, Point point2)
 		{
 			return new Point(point1.X + point2.X, point1.Y + point2.Y);
 		}
 
-		public static Point operator-(Point point1, Point point2)
+		public static Point operator -(Point point1, Point point2)
 		{
 			return new Point(point1.X - point2.X, point1.Y - point2.Y);
 		}
 
-		public static Point operator/(Point point1, int i_Divisor)
+		public static Point operator /(Point point1, int i_Divisor)
 		{
 			return new Point(point1.X / i_Divisor, point1.Y / i_Divisor);
 		}
@@ -42,6 +42,7 @@ namespace B18_Ex02_Data
 			{
 				return x;
 			}
+
 			set
 			{
 				x = value;
@@ -54,6 +55,7 @@ namespace B18_Ex02_Data
 			{
 				return y;
 			}
+
 			set
 			{
 				y = value;

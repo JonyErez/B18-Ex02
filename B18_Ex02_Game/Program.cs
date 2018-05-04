@@ -24,11 +24,12 @@ namespace B18_Ex02_Game
 				{
 					game.PrintBoard();
 					game.PlayCurrentTurn();
-				} while (!game.IsGameOver());
+				}
+				while (!game.IsGameOver());
 				game.GameOver();
 				game.IsAnotherRound();
-			} while (game.PlayAnotherRound);
-
+			}
+			while (game.PlayAnotherRound);
 		}
 	}
 }

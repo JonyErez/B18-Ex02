@@ -18,10 +18,12 @@ namespace B18_Ex02_Data
 		public List<PieceMove> findPossibleSteppingForwardMoves(GamePiece i_GamePiece)
 		{
 			List<PieceMove> possibleSteppingForwardMoves = new List<PieceMove>(2);
+
 			if(i_GamePiece.IsKing)
 			{
 				possibleSteppingForwardMoves.AddRange(findSteppingForwardMoves(i_GamePiece, i_GamePiece.Owner.ReverseDirection));
 			}
+
 			possibleSteppingForwardMoves.AddRange(findSteppingForwardMoves(i_GamePiece, i_GamePiece.Owner.Direction));
 
 			return possibleSteppingForwardMoves;
@@ -37,6 +39,7 @@ namespace B18_Ex02_Data
 			{
 				currentPieceSteppingForward.Add(currentPieceSteppingLeft);
 			}
+
 			if (currentPieceSteppingRight != null)
 			{
 				currentPieceSteppingForward.Add(currentPieceSteppingRight);
@@ -56,16 +59,19 @@ namespace B18_Ex02_Data
 				Point destination = new Point(col, row);
 				steppingMove = new PieceMove(i_Location, destination, false);
 			}
+
 			return steppingMove;
 		}
 
 		public List<PieceMove> findPossibleEatingMoves(GamePiece i_GamePiece)
 		{
 			List<PieceMove> possibleEatingMoves = new List<PieceMove>(2);
+
 			if(i_GamePiece.IsKing)
 			{
 				possibleEatingMoves.AddRange(findEatingMoves(i_GamePiece, i_GamePiece.Owner.ReverseDirection));
 			}
+
 			possibleEatingMoves.AddRange(findEatingMoves(i_GamePiece, i_GamePiece.Owner.Direction));
 
 			return possibleEatingMoves;
@@ -81,6 +87,7 @@ namespace B18_Ex02_Data
 			{
 				currentPieceEatingMoves.Add(currentPieceEatingLeft);
 			}
+
 			if (currentPieceEatingRight != null)
 			{
 				currentPieceEatingMoves.Add(currentPieceEatingRight);
@@ -111,6 +118,7 @@ namespace B18_Ex02_Data
 					}
 				}
 			}
+
 			return EatingMove;
 		}
 
@@ -126,10 +134,12 @@ namespace B18_Ex02_Data
 		private Player getSquareOwnership(int i_Row, int i_Col)
 		{
 			Player owner = null;
+
 			if (m_Board[i_Row, i_Col] != null)
 			{
 				owner = m_Board[i_Row, i_Col].Owner;
 			}
+
 			return owner;
 		}
 
@@ -176,10 +186,12 @@ namespace B18_Ex02_Data
 		public char GetSymbol(Point i_Coordinates)
 		{
 			char symbol = ' ';
+
 			if (m_Board[i_Coordinates.X, i_Coordinates.Y] != null)
 			{
 				symbol = m_Board[i_Coordinates.X, i_Coordinates.Y].Symbol;
 			}
+
 			return symbol;
 		}
 	}

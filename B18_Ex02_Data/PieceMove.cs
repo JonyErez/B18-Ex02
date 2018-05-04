@@ -6,9 +6,9 @@ namespace B18_Ex02_Data
 {
 	internal class PieceMove
 	{
+		private readonly bool k_DoesEat;
 		private Point m_Location;
 		private Point m_Destination;
-		private readonly bool k_DoesEat;
 
 		public PieceMove(Point i_Location, Point i_Destination, bool i_DoesEat)
 		{
@@ -23,6 +23,7 @@ namespace B18_Ex02_Data
 			{
 				return m_Location;
 			}
+
 			set
 			{
 				m_Location = value;
@@ -35,6 +36,7 @@ namespace B18_Ex02_Data
 			{
 				return m_Destination;
 			}
+
 			set
 			{
 				m_Destination = value;
@@ -48,7 +50,5 @@ namespace B18_Ex02_Data
 				return k_DoesEat;
 			}
 		}
-
 	}
-
 }

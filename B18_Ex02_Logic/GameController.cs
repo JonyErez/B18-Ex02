@@ -90,10 +90,14 @@ namespace B18_Ex02_Game_Controller
 				uint winnerScore;
 				winnerScore = m_Model.CalculatePlayerScore(m_Model.otherPlayer()) - m_Model.CalculatePlayerScore(m_Model.PlayerTurn);
 				m_Model.SetPlayerScore(winnerScore, m_Model.otherPlayer());
-				m_View.PrintWinner(m_Model.GetPlayerName(m_Model.otherPlayer()),m_Model.GetPlayerSymbol(m_Model.otherPlayer()), winnerScore); 
+				m_View.PrintWinner(m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()), winnerScore);
 			}
-			m_View.PrintGameOver(m_Model.GetPlayerName(m_Model.PlayerTurn),m_Model.GetPlayerScore(m_Model.PlayerTurn),
-								m_Model.GetPlayerName(m_Model.otherPlayer()),m_Model.GetPlayerScore(m_Model.otherPlayer()));
+
+			m_View.PrintGameOver(
+				m_Model.GetPlayerName(m_Model.PlayerTurn), 
+				m_Model.GetPlayerScore(m_Model.PlayerTurn),
+				m_Model.GetPlayerName(m_Model.otherPlayer()), 
+				m_Model.GetPlayerScore(m_Model.otherPlayer()));
 		}
 
 		private bool doesCurrentPlayerHaveMoves()
@@ -110,6 +114,7 @@ namespace B18_Ex02_Game_Controller
 			{
 				doesPiecesLeft = false;
 			}
+
 			return doesPiecesLeft;
 		}
 
@@ -128,46 +133,6 @@ namespace B18_Ex02_Game_Controller
 		{
 			m_Model.CheckAndMakeKing();
 			PrintBoard();
-		}
-
-		private void getPlayerInputForFirstTurn(out Point o_Source, out Point o_Destination)
-		{
-			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn),
-									m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()));
-			string playerInput = Console.ReadLine();
-			char maxCapital = (char)(m_Model.BoardSize + 'A' - 1);
-			char maxLittle = (char)(m_Model.BoardSize + 'a' - 1);
-			string regex = string.Format("^[A-{0}][a-{1}]>[A-{0}][a-{1}]$", maxCapital, maxLittle);
-			System.Text.RegularExpressions.Regex checkInput = new System.Text.RegularExpressions.Regex(regex);
-			while (!checkInput.IsMatch(playerInput))
-			{
-				m_View.PrintError(ConsoleInterface.eErrors.InvalidMoveInput);
-				playerInput = Console.ReadLine();
-			}
-			stringToLocations(playerInput, out o_Source, out o_Destination);
-		}
-
-		private void getPlayerInputForContinuousTurns(Point i_Location, out Point o_Destination)
-		{
-			m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn),
-									m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn));
-			string playerInput = Console.ReadLine();
-			char maxCapital = (char)(m_Model.BoardSize + 'A' - 1);
-			char maxLittle = (char)(m_Model.BoardSize + 'a' - 1);
-			string regex = string.Format("^{0}>[A-{1}][a-{2}]$", locationToString(i_Location), maxCapital, maxLittle);
-			System.Text.RegularExpressions.Regex checkInput = new System.Text.RegularExpressions.Regex(regex);
-			while (!checkInput.IsMatch(playerInput))
-			{
-				m_View.PrintError(ConsoleInterface.eErrors.InvalidMoveInput);
-				playerInput = Console.ReadLine();
-			}
-			stringToLocations(playerInput, out i_Location, out o_Destination);
-		}
-
-		private void stringToLocations(string i_PlayerInput, out Point o_Source, out Point o_Destination)
-		{
-			o_Source = new Point(i_PlayerInput[0] - 'A', i_PlayerInput[1] - 'a');
-			o_Destination = new Point(i_PlayerInput[3] - 'A', i_PlayerInput[4] - 'a');
 		}
 
 		public void InitializeGame()
@@ -206,7 +171,7 @@ namespace B18_Ex02_Game_Controller
 
 		private void InitializeViewBoard()
 		{
-			m_View.GameBoard = new char[m_Model.BoardSize,m_Model.BoardSize];
+			m_View.GameBoard = new char[m_Model.BoardSize, m_Model.BoardSize];
 			updateBoard();
 		}
 
@@ -232,6 +197,5 @@ namespace B18_Ex02_Game_Controller
 		{
 			return string.Format("{0}{1}", (char)(i_Location.X + 'A'), (char)(i_Location.Y + 'a'));
 		}
-
 	}
 }

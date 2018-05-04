@@ -46,6 +46,7 @@ namespace B18_Ex02_Data
 			{
 				return m_IsKing;
 			}
+
 			set
 			{
 				m_IsKing = value;
@@ -70,6 +71,5 @@ namespace B18_Ex02_Data
 			m_IsKing = true;
 			m_Symbol = m_Owner.KingSymbol;
 		}
-
     }
 }

@@ -6,15 +6,21 @@ namespace B18_Ex02_Data
 {
 	internal class Player
 	{
-		private List<GamePiece> m_GamePieces = new List<GamePiece>();
-		private uint m_Score = 0;
 		private readonly string k_Name;
 		private readonly char k_GamePieceSymbol;
 		private readonly char k_KingSymbol;
 		private readonly eDirection m_Direction;
 		private readonly bool k_IsComputer;
+		private List<GamePiece> m_GamePieces = new List<GamePiece>();
+		private uint m_Score = 0;
 
-		internal enum eDirection {DOWN = 1, UP = -1, LEFT = -1, RIGHT = 1};
+		internal enum eDirection
+		{
+			DOWN = 1,
+			UP = -1,
+			LEFT = -1,
+			RIGHT = 1
+		}
 
 		public Player(string i_Name, char i_GamePieceSymbol, char i_KingSymbol, eDirection i_Direction, bool i_IsComputer)
 		{
@@ -46,6 +52,7 @@ namespace B18_Ex02_Data
 				{
 					reverseDirection = eDirection.DOWN;
 				}
+
 				return reverseDirection;
 			}
 		}
@@ -72,6 +79,7 @@ namespace B18_Ex02_Data
 			{
 				return m_Score;
 			}
+
 			set
 			{
 				m_Score = value;
