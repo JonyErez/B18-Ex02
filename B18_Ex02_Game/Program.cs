@@ -18,15 +18,16 @@ namespace B18_Ex02_Game
 			GameController game = new GameController();
 
 			game.InitializeGame();
-			while (true)
+			do
 			{
-				game.UpdateBoard();
-				game.PrintBoard();
-				game.PlayCurrentTurn(); 
-			}
-			//Needs to be continue
-
-			//Console.WriteLine("GAME IS OVER");
+				do
+				{
+					game.PrintBoard();
+					game.PlayCurrentTurn();
+				} while (!game.IsGameOver());
+				game.GameOver();
+				game.IsAnotherRound();
+			} while (game.PlayAnotherRound);
 
 		}
 	}

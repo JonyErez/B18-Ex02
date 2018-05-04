@@ -11,6 +11,63 @@ namespace B18_Ex02_Data
 		private int m_PlayerTurn = 0;
 		private GamePiece m_PieceToMove = null;
 		private List<PieceMove> m_CurrentTurnPossibleMoves = new List<PieceMove>(2);
+		private bool m_WasPieceEaten = false;
+		private bool m_IsGameOver = false;
+		private bool m_didPlayerQuit = false;
+
+		private void clearPlayerPieces(Player i_Player)
+		{
+			foreach(GamePiece currentPiece in i_Player.GamePieces)
+			{
+				m_Board.Board[currentPiece.Location.Y, currentPiece.Location.X] = null;
+			}
+			i_Player.GamePieces.Clear();
+		}
+
+		public void ResetGameData()
+		{
+			clearBoard();
+			resetGameFlags();
+			m_Board.InitializeBoard(m_Players[0],m_Players[1]);
+		}
+
+		private void clearBoard()
+		{
+			clearPlayerPieces(m_Players[0]);
+			clearPlayerPieces(m_Players[1]);
+		}
+
+		private void resetGameFlags()
+		{
+			m_PlayerTurn = 0;
+			m_IsGameOver = false;
+			m_didPlayerQuit = false;
+			m_WasPieceEaten = false;
+		}
+
+		public bool DidPlayerQuit
+		{
+			get
+			{
+				return m_didPlayerQuit;
+			}
+			set
+			{
+				m_didPlayerQuit = value;
+			}
+		}
+
+		public bool IsGameOver
+		{
+			get
+			{
+				return m_IsGameOver;
+			}
+			set
+			{
+				m_IsGameOver = value;
+			}
+		}
 
 		public List<string> GetCurrentMoves()
 		{
@@ -21,6 +78,26 @@ namespace B18_Ex02_Data
 			}
 
 			return currentMoves;
+		}
+
+		public int PlayerTurn
+		{
+			get
+			{
+				return m_PlayerTurn;
+			}
+		}
+
+		public bool WasPieceEaten
+		{
+			get
+			{
+				return m_WasPieceEaten;
+			}
+			set
+			{
+				m_WasPieceEaten = value;
+			}
 		}
 
 		private string locationToString(Point i_Location)
@@ -38,24 +115,16 @@ namespace B18_Ex02_Data
 				return m_Players[i_PlayerNumber].GamePieceSymbol;
 		}
 
-		public int WhosPlayersTurn
-		{
-			get
-			{
-				return m_PlayerTurn;
-			}
-		}
-
-		public bool FindPlayersFirstMoves()
+		public bool FindPlayersFirstMoves(int i_PlayerNumber)
 		{
 			m_CurrentTurnPossibleMoves.Clear();
-			foreach (GamePiece currentPiece in m_Players[m_PlayerTurn].GamePieces)
+			foreach (GamePiece currentPiece in m_Players[i_PlayerNumber].GamePieces)
 			{
 				m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(currentPiece));
 			}
 			if(m_CurrentTurnPossibleMoves.Count == 0)
 			{
-				foreach (GamePiece currentPiece in m_Players[m_PlayerTurn].GamePieces)
+				foreach (GamePiece currentPiece in m_Players[i_PlayerNumber].GamePieces)
 				{
 					m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleSteppingForwardMoves(currentPiece));
 				}
@@ -86,6 +155,7 @@ namespace B18_Ex02_Data
 			if (m_CurrentTurnPossibleMoves[i_PieceMoveIndex].DoesEat)
 			{
 				eatPiece(m_Board.findEatenPiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex]));
+				m_WasPieceEaten = true;
 			}
 			movePiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Destination);
 
@@ -127,6 +197,7 @@ namespace B18_Ex02_Data
 
 		public void EndTurn()
 		{
+			m_WasPieceEaten = false;
 			m_PieceToMove = null;
 			m_PlayerTurn = otherPlayer();
 		}
@@ -181,14 +252,36 @@ namespace B18_Ex02_Data
 			return m_PieceToMove.Location;
 		}
 
-		public int GetCurrentPlayerNumberOfPieces()
+		public uint GetPlayerNumberOfPieces(int PlayerNumber)
 		{
-			return m_Players[m_PlayerTurn].GamePieces.Count;
+			return (uint)m_Players[PlayerNumber].GamePieces.Count;
 		}
 
-		public int GetOtherPlayerNumberOfPieces()
+		public void SetPlayerScore(uint i_Score, int PlayerNumber)
 		{
-			return m_Players[otherPlayer()].GamePieces.Count;
+			m_Players[PlayerNumber].Score += i_Score;
+		}
+
+		public uint GetPlayerScore(int PlayerNumber)
+		{
+			return m_Players[PlayerNumber].Score;
+		}
+
+		public uint CalculatePlayerScore(int PlayerNumber)
+		{
+			uint playerScore = 0;
+			foreach (GamePiece currentPiece in m_Players[PlayerNumber].GamePieces)
+			{
+				if (currentPiece.IsKing)
+				{
+					playerScore += 4;// change the 4
+				}
+				else
+				{
+					playerScore += 1;
+				}
+			}
+			return playerScore;
 		}
 	}
 }

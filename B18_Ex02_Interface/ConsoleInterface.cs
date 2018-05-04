@@ -11,6 +11,45 @@ namespace B18_Ex02_Interface
 		private char[,] m_GameBoard;
 		private string m_LastAction = null;
 
+		public bool AskForAnotherRound()
+		{
+			char playerInputForAnotherRound;
+
+			do
+			{
+				Console.WriteLine(
+	String.Format(@"Do you wish to play another round (Y\N)? "));
+
+				while (!char.TryParse(Console.ReadLine(), out playerInputForAnotherRound))
+				{
+					PrintError(eErrors.InvalidInput);
+					Console.WriteLine(
+		String.Format(@"Do you wish to play another round (Y\N)? "));
+
+				}
+			} while (!(char.ToUpper(playerInputForAnotherRound) == 'Y') && !(char.ToUpper(playerInputForAnotherRound) == 'N'));
+
+			return char.ToUpper(playerInputForAnotherRound) == 'Y';
+		}
+
+		public void PrintWinner(string i_Winner, char i_WinnerSymbol, uint i_WinnerScore)
+		{
+			Console.WriteLine(String.Format(@"{0} ({1}) Won! with the score of {2}.", i_Winner, i_WinnerSymbol, i_WinnerScore));
+		}
+
+		public void PrintTie()
+		{
+			Console.WriteLine("Its a tie!");
+		}
+
+		public void PrintGameOver(string i_PlayerOneName, uint i_PlayerOneScore, string i_PlayerTwoName, uint i_PlayerTwoScore)
+		{
+			Console.WriteLine(
+String.Format(@"The current scores are:
+{0}'s score is: {1}
+{2}'s score is: {3}", i_PlayerOneName, i_PlayerOneScore, i_PlayerTwoName, i_PlayerTwoScore));
+		}
+
 		public void TurnInformation(string i_CurrentPlayerName, char i_CurrentPlayerSymbol, string i_PreviousPlayerName, char i_PreviousPlayerSymbol)
 		{
 			if(m_LastAction != null)
@@ -142,23 +181,30 @@ namespace B18_Ex02_Interface
 			Console.WriteLine(currentRow);
 		}
 
-		public int getPlayerInput(List<string> i_LegalInputs)
+		public bool getPlayerInput(List<string> i_LegalInputs, bool i_CanPlayerQuit, out int o_PlayerSelectedMove)
 		{
 			string playerInput;
+			bool didPlayerQuit = false;
 
+			o_PlayerSelectedMove = 0;
 			playerInput = Console.ReadLine();
-			while(!i_LegalInputs.Contains(playerInput))
+			while(!i_LegalInputs.Contains(playerInput) && (playerInput != "Q" || !i_CanPlayerQuit))
 			{
 				PrintError(eErrors.InvalidMoveInput);
 				playerInput = Console.ReadLine();
 			}
 
-			m_LastAction = playerInput;
+			didPlayerQuit = playerInput == "Q";
+			if(!didPlayerQuit)
+			{
+				m_LastAction = playerInput;
+				o_PlayerSelectedMove = i_LegalInputs.IndexOf(playerInput);
+			}
 
-			return i_LegalInputs.IndexOf(playerInput);
+			return didPlayerQuit;
 		}
 
-		public enum eErrors { InvalidBoardInput = 1, InvalidMoveInput = 2, InvalidPieceMove = 3, InvalidAmountOfPlayers = 4}
+		public enum eErrors { InvalidBoardInput = 1, InvalidMoveInput = 2, InvalidPieceMove = 3, InvalidAmountOfPlayers = 4, InvalidInput = 5}
 
 		public void PrintError(eErrors i_Error)
 		{
@@ -178,6 +224,9 @@ Please enter a valid input in the following format: COLrow>COLrow"));
 				case eErrors.InvalidAmountOfPlayers:
 					Console.WriteLine(@"Invalid number of players!
 Please enter a valid number of players (1 or 2): ");
+					break;
+				case eErrors.InvalidInput:
+					Console.WriteLine("Invalid input!");
 					break;
 			}
 		}
