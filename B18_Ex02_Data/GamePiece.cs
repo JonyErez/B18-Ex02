@@ -6,28 +6,28 @@ namespace B18_Ex02_Data
 {
 	internal class GamePiece
 	{
-		private readonly Player m_Owner;
-		private char m_Symbol;
-		private bool m_IsKing = false;
-		private Point m_Location;
+		private readonly	Player	r_Owner;
+		private				char	m_Symbol;
+		private				bool	m_IsKing = false;
+		private				Point	m_Location;
 
-		internal GamePiece(Player i_Owner, Point i_Location)
+		internal			GamePiece(Player i_Owner, Point i_Location)
 		{
-			m_Owner = i_Owner;
+			r_Owner = i_Owner;
 			m_Symbol = i_Owner.GamePieceSymbol;
 			m_Location = i_Location;
 			i_Owner.AddGamePiece(this);
 		}
 
-		internal Player Owner
+		internal	Player	Owner
 		{
 			get
 			{
-				return m_Owner;
+				return r_Owner;
 			}
 		}
 		
-		internal char Symbol
+		internal	char	Symbol
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		internal bool IsKing
+		internal	bool	IsKing
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		internal Point Location
+		internal	Point	Location
 		{
 			get
 			{
@@ -66,10 +66,10 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		internal void MakeKing()
+		internal	void	MakeKing()
 		{
 			m_IsKing = true;
-			m_Symbol = m_Owner.KingSymbol;
+			m_Symbol = r_Owner.KingSymbol;
 		}
     }
 }

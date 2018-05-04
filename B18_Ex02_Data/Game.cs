@@ -6,19 +6,24 @@ namespace B18_Ex02_Data
 {
 	public class Game
 	{
-		private const int KingScore = 4;
-		private const int PawnScore = 1;
+		private	const	int				k_KingScore = 4;
+		private	const	int				k_PawnScore = 1;
 
-		private GameBoard m_Board;
-		private Player[] m_Players = new Player[2];
-		private int m_PlayerTurn = 0;
-		private GamePiece m_PieceToMove = null;
-		private List<PieceMove> m_CurrentTurnPossibleMoves = new List<PieceMove>(2);
-		private bool m_WasPieceEaten = false;
-		private bool m_IsGameOver = false;
-		private bool m_didPlayerQuit = false;
+		private			GameBoard		m_Board;
+		private			Player[]		m_Players = new Player[2];
+		private			int				m_PlayerTurn = 0;
+		private			GamePiece		m_PieceToMove = null;
+		private			List<PieceMove> m_CurrentTurnPossibleMoves = new List<PieceMove>(2);
+		private			bool			m_WasPieceEaten = false;
+		private			bool			m_IsGameOver = false;
+		private			bool			m_didPlayerQuit = false;
 
-		private void clearPlayerPieces(Player i_Player)
+		public	bool			IsCurrentPlayerComputer()
+		{
+			return m_Players[m_PlayerTurn].IsComputer;
+		}
+
+		private	void			clearPlayerPieces(Player i_Player)
 		{
 			foreach(GamePiece currentPiece in i_Player.GamePieces)
 			{
@@ -28,20 +33,20 @@ namespace B18_Ex02_Data
 			i_Player.GamePieces.Clear();
 		}
 
-		public void ResetGameData()
+		public	void			ResetGameData()
 		{
 			clearBoard();
 			resetGameFlags();
 			m_Board.InitializeBoard(m_Players[0], m_Players[1]);
 		}
 
-		private void clearBoard()
+		private	void			clearBoard()
 		{
 			clearPlayerPieces(m_Players[0]);
 			clearPlayerPieces(m_Players[1]);
 		}
 
-		private void resetGameFlags()
+		private	void			resetGameFlags()
 		{
 			m_PlayerTurn = 0;
 			m_IsGameOver = false;
@@ -49,7 +54,7 @@ namespace B18_Ex02_Data
 			m_WasPieceEaten = false;
 		}
 
-		public bool DidPlayerQuit
+		public	bool			DidPlayerQuit
 		{
 			get
 			{
@@ -62,7 +67,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public bool IsGameOver
+		public	bool			IsGameOver
 		{
 			get
 			{
@@ -75,7 +80,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public List<string> GetCurrentMoves()
+		public	List<string>	GetCurrentMoves()
 		{
 			List<string> currentMoves = new List<string>(m_CurrentTurnPossibleMoves.Count);
 			foreach (PieceMove currentMove in m_CurrentTurnPossibleMoves)
@@ -86,15 +91,15 @@ namespace B18_Ex02_Data
 			return currentMoves;
 		}
 
-		public int PlayerTurn
+		public	int				CurrentPlayerTurn
 		{
 			get
 			{
 				return m_PlayerTurn;
 			}
 		}
-
-		public bool WasPieceEaten
+	
+		public	bool			WasPieceEaten
 		{
 			get
 			{
@@ -107,22 +112,22 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		private string locationToString(Point i_Location)
+		private	string			locationToString(Point i_Location)
 		{
 			return string.Format("{0}{1}", (char)(i_Location.X + 'A'), (char)(i_Location.Y + 'a'));
 		}
 
-		public string GetPlayerName(int i_PlayerNumber)
+		public	string			GetPlayerName(int i_PlayerNumber)
 		{
 				return m_Players[i_PlayerNumber].Name;
 		}
 
-		public char GetPlayerSymbol(int i_PlayerNumber)
+		public	char			GetPlayerSymbol(int i_PlayerNumber)
 		{
 				return m_Players[i_PlayerNumber].GamePieceSymbol;
 		}
 
-		public bool FindPlayersFirstMoves(int i_PlayerNumber)
+		public	bool			FindPlayersFirstMoves(int i_PlayerNumber)
 		{
 			m_CurrentTurnPossibleMoves.Clear();
 			foreach (GamePiece currentPiece in m_Players[i_PlayerNumber].GamePieces)
@@ -141,20 +146,15 @@ namespace B18_Ex02_Data
 			return m_CurrentTurnPossibleMoves.Count != 0;
 		}
 
-		public bool FindPlayersContinuationMoves()
+		public	bool			FindPlayersContinuationMoves()
 		{
 			m_CurrentTurnPossibleMoves.Clear();
 			m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(m_PieceToMove));
 
-			if (m_CurrentTurnPossibleMoves.Count != 0)
-			{
-				m_PieceToMove = null;
-			}
-
 			return m_CurrentTurnPossibleMoves.Count != 0;
 		}
 
-		public void MakePlayerMove(int i_PieceMoveIndex)
+		public	void			MakePlayerMove(int i_PieceMoveIndex)
 		{
 			if (m_PieceToMove == null)
 			{
@@ -170,7 +170,7 @@ namespace B18_Ex02_Data
 			movePiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex].Destination);
 		}
 
-		public void CheckAndMakeKing()
+		public	void			CheckAndMakeKing()
 		{
 			if (m_PieceToMove != null)
 			{
@@ -191,27 +191,27 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		private void movePiece(Point i_Destination)
+		private	void			movePiece(Point i_Destination)
 		{
 			m_Board.Board[i_Destination.Y, i_Destination.X] = m_PieceToMove;
 			m_Board.Board[m_PieceToMove.Location.Y, m_PieceToMove.Location.X] = null;
 			m_PieceToMove.Location.UpdateCoordinates(i_Destination.X, i_Destination.Y);
 		}
 
-		private void eatPiece(GamePiece i_EatenPiece)
+		private void			eatPiece(GamePiece i_EatenPiece)
 		{
-			m_Players[otherPlayer()].RemoveGamePiece(i_EatenPiece);
+			m_Players[OtherPlayer()].RemoveGamePiece(i_EatenPiece);
 			m_Board.Board[i_EatenPiece.Location.Y, i_EatenPiece.Location.X] = null;
 		}
 
-		public void EndTurn()
+		public	void			EndTurn()
 		{
 			m_WasPieceEaten = false;
 			m_PieceToMove = null;
-			m_PlayerTurn = otherPlayer();
+			m_PlayerTurn = OtherPlayer();
 		}
 
-		public int otherPlayer()
+		public	int				OtherPlayer()
 		{
 			int secondPlayer;
 			if (m_PlayerTurn == 0)
@@ -226,7 +226,7 @@ namespace B18_Ex02_Data
 			return secondPlayer;
 		}
 
-		public int BoardSize
+		public	int				BoardSize
 		{
 			get
 			{
@@ -234,48 +234,43 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public void InitializePlayerOne(string i_Name)
+		public	void			InitializePlayerOne(string i_Name)
 		{
 			m_Players[0] = new Player(i_Name, 'O', 'U', Player.eDirection.DOWN, false);
 		}
 
-		public void InitializePlayerTwo(string i_Name, bool i_IsComputer)
+		public	void			InitializePlayerTwo(string i_Name, bool i_IsComputer)
 		{
 			m_Players[1] = new Player(i_Name, 'X', 'K', Player.eDirection.UP, i_IsComputer);
 		}
 
-		public void InitializeBoard(int i_BoardSize)
+		public	void			InitializeBoard(int i_BoardSize)
 		{
 			m_Board = new GameBoard(i_BoardSize);
 			m_Board.InitializeBoard(m_Players[0], m_Players[1]);
 		}
 
-		public char GetSymbol(Point i_Coordinates)
+		public	char			GetSymbol(Point i_Coordinates)
 		{
 			return m_Board.GetSymbol(i_Coordinates);
 		}
 
-		public Point GetCurrentPieceLocation()
-		{
-			return m_PieceToMove.Location;
-		}
-
-		public uint GetPlayerNumberOfPieces(int PlayerNumber)
+		public	uint			GetPlayerNumberOfPieces(int PlayerNumber)
 		{
 			return (uint)m_Players[PlayerNumber].GamePieces.Count;
 		}
 
-		public void SetPlayerScore(uint i_Score, int PlayerNumber)
+		public	void			SetPlayerScore(uint i_Score, int PlayerNumber)
 		{
 			m_Players[PlayerNumber].Score += i_Score;
 		}
 
-		public uint GetPlayerScore(int PlayerNumber)
+		public	uint			GetPlayerScore(int PlayerNumber)
 		{
 			return m_Players[PlayerNumber].Score;
 		}
 
-		public uint CalculatePlayerScore(int PlayerNumber)
+		public	uint			CalculatePlayerScore(int PlayerNumber)
 		{
 			uint playerScore = 0;
 
@@ -283,11 +278,11 @@ namespace B18_Ex02_Data
 			{
 				if (currentPiece.IsKing)
 				{
-					playerScore += KingScore;
+					playerScore += k_KingScore;
 				}
 				else
 				{
-					playerScore += PawnScore;
+					playerScore += k_PawnScore;
 				}
 			}
 

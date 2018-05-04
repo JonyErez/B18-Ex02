@@ -6,16 +6,16 @@ namespace B18_Ex02_Data
 {
 	internal class GameBoard
 	{
-		private readonly int m_BoardSize;
+		private readonly int r_BoardSize;
 		private GamePiece[,] m_Board;
 
-		public GameBoard(int i_BoardSize)
+		public	GameBoard(int i_BoardSize)
 		{
-			m_BoardSize = i_BoardSize;
+			r_BoardSize = i_BoardSize;
 			m_Board = new GamePiece[i_BoardSize, i_BoardSize];
 		}
 
-		public List<PieceMove> findPossibleSteppingForwardMoves(GamePiece i_GamePiece)
+		public	List<PieceMove>	findPossibleSteppingForwardMoves(GamePiece i_GamePiece)
 		{
 			List<PieceMove> possibleSteppingForwardMoves = new List<PieceMove>(2);
 
@@ -29,7 +29,7 @@ namespace B18_Ex02_Data
 			return possibleSteppingForwardMoves;
 		}
 
-		private List<PieceMove> findSteppingForwardMoves(GamePiece i_GamePiece, Player.eDirection i_VerticalDirection)
+		private	List<PieceMove>	findSteppingForwardMoves(GamePiece i_GamePiece, Player.eDirection i_VerticalDirection)
 		{
 			List<PieceMove> currentPieceSteppingForward = new List<PieceMove>(2);
 			PieceMove currentPieceSteppingLeft = findSpecificSteppingMove(i_GamePiece.Location, i_VerticalDirection, Player.eDirection.LEFT);
@@ -48,7 +48,7 @@ namespace B18_Ex02_Data
 			return currentPieceSteppingForward;
 		}
 
-		private PieceMove findSpecificSteppingMove(Point i_Location, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
+		private	PieceMove		findSpecificSteppingMove(Point i_Location, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
 		{
 			PieceMove steppingMove = null;
 			int row = i_Location.Y + (int)i_VerticalDirection;
@@ -63,7 +63,7 @@ namespace B18_Ex02_Data
 			return steppingMove;
 		}
 
-		public List<PieceMove> findPossibleEatingMoves(GamePiece i_GamePiece)
+		public	List<PieceMove>	findPossibleEatingMoves(GamePiece i_GamePiece)
 		{
 			List<PieceMove> possibleEatingMoves = new List<PieceMove>(2);
 
@@ -96,7 +96,7 @@ namespace B18_Ex02_Data
 			return currentPieceEatingMoves;
 		}
 
-		private PieceMove findSpecificEatingMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
+		private	PieceMove		findSpecificEatingMoves(GamePiece i_Piece, Player.eDirection i_VerticalDirection, Player.eDirection i_HorizontalDirection)
 		{
 			PieceMove EatingMove = null;
 			int pieceToEatRow = i_Piece.Location.Y + (int)i_VerticalDirection;
@@ -122,7 +122,7 @@ namespace B18_Ex02_Data
 			return EatingMove;
 		}
 
-		public GamePiece findEatenPiece(PieceMove i_EatingMove)
+		public	GamePiece		findEatenPiece(PieceMove i_EatingMove)
 		{
 			Point eatenPieceLocation;
 			Point difference = i_EatingMove.Destination - i_EatingMove.Location;
@@ -131,7 +131,7 @@ namespace B18_Ex02_Data
 			return m_Board[eatenPieceLocation.Y, eatenPieceLocation.X];
 		}
 
-		private Player getSquareOwnership(int i_Row, int i_Col)
+		private Player			getSquareOwnership(int i_Row, int i_Col)
 		{
 			Player owner = null;
 
@@ -143,39 +143,39 @@ namespace B18_Ex02_Data
 			return owner;
 		}
 
-		private bool isCoordinateInBoard(int i_Row, int i_Col)
+		private bool			isCoordinateInBoard(int i_Row, int i_Col)
 		{
-			return !(i_Col < 0 || i_Col >= m_BoardSize || i_Row < 0 || i_Row >= m_BoardSize);
+			return !(i_Col < 0 || i_Col >= r_BoardSize || i_Row < 0 || i_Row >= r_BoardSize);
 		}
 
-		public void InitializeBoard(Player i_PlayerOne, Player i_PlayerTwo)
+		public	void			InitializeBoard(Player i_PlayerOne, Player i_PlayerTwo)
 		{
-			int howManyRows = (m_BoardSize / 2) - 1;
+			int howManyRows = (r_BoardSize / 2) - 1;
 			initializePlayerPieces(i_PlayerOne, 0, howManyRows);
-			initializePlayerPieces(i_PlayerTwo, (m_BoardSize / 2) + 1, howManyRows);
+			initializePlayerPieces(i_PlayerTwo, (r_BoardSize / 2) + 1, howManyRows);
 		}
 
-		private void initializePlayerPieces(Player i_Player, int i_StartingRow, int i_HowManyRows)
+		private void			initializePlayerPieces(Player i_Player, int i_StartingRow, int i_HowManyRows)
 		{
 			for(int currentRow = i_StartingRow; currentRow < i_StartingRow + i_HowManyRows; currentRow++)
 			{
 				int currentCol = currentRow % 2 == 0 ? 1 : 0;
-				for(; currentCol < m_BoardSize; currentCol += 2)
+				for(; currentCol < r_BoardSize; currentCol += 2)
 				{
 					m_Board[currentRow, currentCol] = new GamePiece(i_Player, new Point(currentCol, currentRow));
 				}
 			}
 		}
 
-		public int Size
+		public	int				Size
 		{
 			get
 			{
-				return m_BoardSize;
+				return r_BoardSize;
 			}
 		}
 
-		public GamePiece[,] Board
+		public	GamePiece[,]	Board
 		{
 			get
 			{
@@ -183,7 +183,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public char GetSymbol(Point i_Coordinates)
+		public	char			GetSymbol(Point i_Coordinates)
 		{
 			char symbol = ' ';
 

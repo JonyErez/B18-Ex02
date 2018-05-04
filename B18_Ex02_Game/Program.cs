@@ -7,13 +7,12 @@ namespace B18_Ex02_Game
 {
 	public class Program
 	{
-		public static void Main()
+		public	static	void	Main()
 		{
 			RunGame();
-			Console.ReadLine();
 		}
 
-		public static void RunGame()
+		public	static	void	RunGame()
 		{
 			GameController game = new GameController();
 
@@ -30,6 +29,7 @@ namespace B18_Ex02_Game
 				game.IsAnotherRound();
 			}
 			while (game.PlayAnotherRound);
+			game.EndGame();
 		}
 	}
 }

@@ -8,11 +8,11 @@ namespace B18_Ex02_Game_Controller
 {
 	public class GameController
 	{
-		private ConsoleInterface m_View = new ConsoleInterface();
-		private Game m_Model = new Game();
-		private bool m_PlayAnotherRound = false;
+		private		ConsoleInterface	m_View = new ConsoleInterface();
+		private		Game				m_Model = new Game();
+		private		bool				m_PlayAnotherRound = false;
 
-		public void IsAnotherRound()
+		public		void	IsAnotherRound()
 		{
 			m_PlayAnotherRound = m_View.AskForAnotherRound();
 			if(m_PlayAnotherRound)
@@ -21,13 +21,13 @@ namespace B18_Ex02_Game_Controller
 			}
 		}
 
-		private void resetGameData()
+		private		void	resetGameData()
 		{
 			m_Model.ResetGameData();
 			m_View.LastAction = null;
 		}
 
-		public bool PlayAnotherRound
+		public		bool	PlayAnotherRound
 		{
 			get
 			{
@@ -35,27 +35,35 @@ namespace B18_Ex02_Game_Controller
 			}
 		}
 
-		public void PlayCurrentTurn()
+		public		void	PlayCurrentTurn()
 		{
 			int playerSelectedMove;
-			bool canPlayerQuit = m_Model.GetPlayerScore(m_Model.PlayerTurn) - m_Model.GetPlayerScore(m_Model.otherPlayer()) < 0;
+			bool canPlayerQuit = canCurrentPlayerQuit();
+
 			m_Model.IsGameOver = doesCurrentPlayerHaveMoves();
 			if (!m_Model.IsGameOver)
 			{
-				m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn), m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()));
-				m_Model.DidPlayerQuit = m_View.getPlayerInput(m_Model.GetCurrentMoves(), canPlayerQuit, out playerSelectedMove);
+				m_View.TurnInformation(
+					m_Model.GetPlayerName(m_Model.CurrentPlayerTurn), 
+					m_Model.GetPlayerSymbol(m_Model.CurrentPlayerTurn), 
+					m_Model.GetPlayerName(m_Model.OtherPlayer()), 
+					m_Model.GetPlayerSymbol(m_Model.OtherPlayer()));
+				decideActionForCurrentTurn(canPlayerQuit, out playerSelectedMove);
 				if (!m_Model.DidPlayerQuit)
 				{
-					m_Model.MakePlayerMove(playerSelectedMove);
-					afterMoveActions();
+					makePlayerMove(playerSelectedMove);
 					while (m_Model.WasPieceEaten && m_Model.FindPlayersContinuationMoves() && !m_Model.DidPlayerQuit)
 					{
-						m_View.TurnInformation(m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn), m_Model.GetPlayerName(m_Model.PlayerTurn), m_Model.GetPlayerSymbol(m_Model.PlayerTurn));
-						m_Model.DidPlayerQuit = m_View.getPlayerInput(m_Model.GetCurrentMoves(), canPlayerQuit, out playerSelectedMove);
+						m_View.TurnInformation(
+							m_Model.GetPlayerName(m_Model.CurrentPlayerTurn), 
+							m_Model.GetPlayerSymbol(m_Model.CurrentPlayerTurn), 
+							m_Model.GetPlayerName(m_Model.CurrentPlayerTurn), 
+							m_Model.GetPlayerSymbol(m_Model.CurrentPlayerTurn));
+						canPlayerQuit = canCurrentPlayerQuit();
+						decideActionForCurrentTurn(canPlayerQuit, out playerSelectedMove);
 						if (!m_Model.DidPlayerQuit)
 						{
-							m_Model.MakePlayerMove(playerSelectedMove);
-							afterMoveActions();
+							makePlayerMove(playerSelectedMove);
 						}
 					}
 
@@ -69,17 +77,43 @@ namespace B18_Ex02_Game_Controller
 			m_Model.IsGameOver = m_Model.DidPlayerQuit || m_Model.IsGameOver;	
 		}
 
-		public bool IsGameOver()
+		private		void	makePlayerMove(int i_PlayerSelectedMove)
+		{
+			m_Model.MakePlayerMove(i_PlayerSelectedMove);
+			m_Model.CheckAndMakeKing();
+			PrintBoard();
+		}
+
+		private		bool	canCurrentPlayerQuit()
+		{
+			return ((int)m_Model.CalculatePlayerScore(m_Model.CurrentPlayerTurn) - (int)m_Model.CalculatePlayerScore(m_Model.OtherPlayer())) < 0;
+		}
+
+		private		void	decideActionForCurrentTurn(bool i_CanPlayerQuit, out int o_PlayerSelectedMove)
+		{
+			Random selectedAction = new Random();
+			if(!m_Model.IsCurrentPlayerComputer())
+			{
+				m_Model.DidPlayerQuit = m_View.GetPlayerInput(m_Model.GetCurrentMoves(), i_CanPlayerQuit, out o_PlayerSelectedMove);
+			}
+			else
+			{
+				o_PlayerSelectedMove = selectedAction.Next(0, m_Model.GetCurrentMoves().Count - 1);
+				m_View.LastAction = m_Model.GetCurrentMoves()[o_PlayerSelectedMove];
+			}
+		}
+
+		public		bool	IsGameOver()
 		{
 			return m_Model.IsGameOver;
 		}
 
-		private bool checkIfTie()
+		private		bool	checkIfTie()
 		{
-			return !m_Model.DidPlayerQuit && !m_Model.FindPlayersFirstMoves(m_Model.otherPlayer());
+			return !m_Model.DidPlayerQuit && !m_Model.FindPlayersFirstMoves(m_Model.OtherPlayer());
 		}
 
-		public void GameOver()
+		public		void	GameOver()
 		{
 			if(checkIfTie())
 			{
@@ -88,29 +122,29 @@ namespace B18_Ex02_Game_Controller
 			else
 			{ 
 				uint winnerScore;
-				winnerScore = m_Model.CalculatePlayerScore(m_Model.otherPlayer()) - m_Model.CalculatePlayerScore(m_Model.PlayerTurn);
-				m_Model.SetPlayerScore(winnerScore, m_Model.otherPlayer());
-				m_View.PrintWinner(m_Model.GetPlayerName(m_Model.otherPlayer()), m_Model.GetPlayerSymbol(m_Model.otherPlayer()), winnerScore);
+				winnerScore = m_Model.CalculatePlayerScore(m_Model.OtherPlayer()) - m_Model.CalculatePlayerScore(m_Model.CurrentPlayerTurn);
+				m_Model.SetPlayerScore(winnerScore, m_Model.OtherPlayer());
+				m_View.PrintWinner(m_Model.GetPlayerName(m_Model.OtherPlayer()), m_Model.GetPlayerSymbol(m_Model.OtherPlayer()), winnerScore);
 			}
 
 			m_View.PrintGameOver(
-				m_Model.GetPlayerName(m_Model.PlayerTurn), 
-				m_Model.GetPlayerScore(m_Model.PlayerTurn),
-				m_Model.GetPlayerName(m_Model.otherPlayer()), 
-				m_Model.GetPlayerScore(m_Model.otherPlayer()));
+				m_Model.GetPlayerName(m_Model.CurrentPlayerTurn), 
+				m_Model.GetPlayerScore(m_Model.CurrentPlayerTurn),
+				m_Model.GetPlayerName(m_Model.OtherPlayer()), 
+				m_Model.GetPlayerScore(m_Model.OtherPlayer()));
 		}
 
-		private bool doesCurrentPlayerHaveMoves()
+		private		bool	doesCurrentPlayerHaveMoves()
 		{
 			bool doesCurrentPlayerHaveMoves;
 			doesCurrentPlayerHaveMoves = !doesCurrentPlayerHaveLegalMoves() || !doesCurrentPlayerHavePiecesLeft();
 			return doesCurrentPlayerHaveMoves;
 		}
 
-		private bool doesCurrentPlayerHavePiecesLeft()
+		private		bool	doesCurrentPlayerHavePiecesLeft()
 		{
 			bool doesPiecesLeft = true;
-			if(m_Model.GetPlayerNumberOfPieces(m_Model.PlayerTurn) == 0)
+			if(m_Model.GetPlayerNumberOfPieces(m_Model.CurrentPlayerTurn) == 0)
 			{
 				doesPiecesLeft = false;
 			}
@@ -118,10 +152,10 @@ namespace B18_Ex02_Game_Controller
 			return doesPiecesLeft;
 		}
 
-		private bool doesCurrentPlayerHaveLegalMoves()
+		private		bool	doesCurrentPlayerHaveLegalMoves()
 		{
 			bool doesPlayerHaveLegalMoves = true;
-			if(!m_Model.FindPlayersFirstMoves(m_Model.PlayerTurn))
+			if(!m_Model.FindPlayersFirstMoves(m_Model.CurrentPlayerTurn))
 			{
 				doesPlayerHaveLegalMoves = false;
 			}
@@ -129,16 +163,11 @@ namespace B18_Ex02_Game_Controller
 			return doesPlayerHaveLegalMoves;
 		}
 
-		private void afterMoveActions()
-		{
-			m_Model.CheckAndMakeKing();
-			PrintBoard();
-		}
-
-		public void InitializeGame()
+		public		void	InitializeGame()
 		{
 			int boardSize;
 			bool vsComputer;
+
 			InitializePlayerOne();
 			boardSize = m_View.AskGameBoardSize();
 			vsComputer = m_View.AskHowManyPlayers() == 1;
@@ -147,16 +176,16 @@ namespace B18_Ex02_Game_Controller
 			InitializeViewBoard();
 		}
 
-		private void InitializePlayerOne()
+		private		void	InitializePlayerOne()
 		{
-			m_Model.InitializePlayerOne(m_View.askPlayerName(m_Model.PlayerTurn));
+			m_Model.InitializePlayerOne(m_View.AskPlayerName(m_Model.CurrentPlayerTurn));
 		}
 
-		private void InitializePlayerTwo(bool isComputer)
+		private		void	InitializePlayerTwo(bool isComputer)
 		{
 			if (!isComputer)
 			{
-				m_Model.InitializePlayerTwo(m_View.askPlayerName(m_Model.otherPlayer()), isComputer);
+				m_Model.InitializePlayerTwo(m_View.AskPlayerName(m_Model.OtherPlayer()), isComputer);
 			}
 			else
 			{
@@ -164,18 +193,18 @@ namespace B18_Ex02_Game_Controller
 			}
 		}
 
-		private void InitializeBoard(int gameBoardSize)
+		private		void	InitializeBoard(int gameBoardSize)
 		{
 			m_Model.InitializeBoard(gameBoardSize);
 		}
 
-		private void InitializeViewBoard()
+		private		void	InitializeViewBoard()
 		{
 			m_View.GameBoard = new char[m_Model.BoardSize, m_Model.BoardSize];
 			updateBoard();
 		}
 
-		private void updateBoard()
+		private		void	updateBoard()
 		{
 			for (int row = 0; row < m_View.GameBoardSize; row++)
 			{
@@ -186,16 +215,16 @@ namespace B18_Ex02_Game_Controller
 			}
 		}
 
-		public void PrintBoard()
+		public		void	PrintBoard()
 		{
 			updateBoard();
 			m_View.ClearScreen();
 			m_View.PrintBoard();
 		}
 
-		private string locationToString(Point i_Location)
+		public		void	EndGame()
 		{
-			return string.Format("{0}{1}", (char)(i_Location.X + 'A'), (char)(i_Location.Y + 'a'));
+			m_View.EndGame();
 		}
 	}
 }

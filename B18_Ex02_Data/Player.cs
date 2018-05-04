@@ -6,15 +6,15 @@ namespace B18_Ex02_Data
 {
 	internal class Player
 	{
-		private readonly string k_Name;
-		private readonly char k_GamePieceSymbol;
-		private readonly char k_KingSymbol;
-		private readonly eDirection m_Direction;
-		private readonly bool k_IsComputer;
-		private List<GamePiece> m_GamePieces = new List<GamePiece>();
-		private uint m_Score = 0;
+		private	readonly	string			r_Name;
+		private readonly	char			r_GamePieceSymbol;
+		private readonly	char			r_KingSymbol;
+		private readonly	eDirection		r_Direction;
+		private readonly	bool			r_IsComputer;
+		private				List<GamePiece>	m_GamePieces = new List<GamePiece>();
+		private				uint			m_Score = 0;
 
-		internal enum eDirection
+		internal	enum			eDirection
 		{
 			DOWN = 1,
 			UP = -1,
@@ -22,29 +22,29 @@ namespace B18_Ex02_Data
 			RIGHT = 1
 		}
 
-		public Player(string i_Name, char i_GamePieceSymbol, char i_KingSymbol, eDirection i_Direction, bool i_IsComputer)
+		public						Player(string i_Name, char i_GamePieceSymbol, char i_KingSymbol, eDirection i_Direction, bool i_IsComputer)
 		{
-			k_Name = i_Name;
-			k_GamePieceSymbol = i_GamePieceSymbol;
-			k_KingSymbol = i_KingSymbol;
-			m_Direction = i_Direction;
-			k_IsComputer = i_IsComputer;
+			r_Name = i_Name;
+			r_GamePieceSymbol = i_GamePieceSymbol;
+			r_KingSymbol = i_KingSymbol;
+			r_Direction = i_Direction;
+			r_IsComputer = i_IsComputer;
 		}
 
-		public eDirection Direction
+		public		eDirection		Direction
 		{
 			get
 			{
-				return m_Direction;
+				return r_Direction;
 			}
 		}
 
-		public eDirection ReverseDirection
+		public		eDirection		ReverseDirection
 		{
 			get
 			{
 				eDirection reverseDirection;
-				if (m_Direction == eDirection.DOWN)
+				if (r_Direction == eDirection.DOWN)
 				{
 					reverseDirection = eDirection.UP;
 				}
@@ -57,7 +57,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public List<GamePiece> GamePieces
+		public		List<GamePiece>	GamePieces
 		{
 			get
 			{
@@ -65,15 +65,15 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public string Name
+		public		string			Name
 		{
 			get
 			{
-				return k_Name;
+				return r_Name;
 			}
 		}
 
-		public uint Score
+		public		uint			Score
 		{
 			get
 			{
@@ -86,30 +86,38 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public char GamePieceSymbol
+		public		char			GamePieceSymbol
 		{
 			get
 			{
-				return k_GamePieceSymbol;
+				return r_GamePieceSymbol;
 			}
 		}
 
-		public char KingSymbol
+		public		char			KingSymbol
 		{
 			get
 			{
-				return k_KingSymbol;
+				return r_KingSymbol;
 			}
 		}
 
-		public void AddGamePiece(GamePiece i_NewPiece)
+		public		void			AddGamePiece(GamePiece i_NewPiece)
 		{
 			m_GamePieces.Add(i_NewPiece);
 		}
 
-		public void RemoveGamePiece(GamePiece i_PieceToRemove)
+		public		void			RemoveGamePiece(GamePiece i_PieceToRemove)
 		{
 			m_GamePieces.Remove(i_PieceToRemove);
+		}
+
+		public		bool			IsComputer
+		{
+			get
+			{
+				return r_IsComputer;
+			}
 		}
 	}
 }

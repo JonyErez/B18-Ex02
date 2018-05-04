@@ -8,10 +8,19 @@ namespace B18_Ex02_Interface
 {
 	public class ConsoleInterface
 	{
-		private char[,] m_GameBoard;
-		private string m_LastAction = null;
+		private		char[,]		m_GameBoard;
+		private		string		m_LastAction = null;
 
-		public bool AskForAnotherRound()
+		public		enum	eErrors
+		{
+			InvalidBoardInput = 1,
+			InvalidMoveInput = 2,
+			InvalidPieceMove = 3,
+			InvalidAmountOfPlayers = 4,
+			InvalidInput = 5
+		}
+
+		public		bool	AskForAnotherRound()
 		{
 			char playerInputForAnotherRound;
 
@@ -32,17 +41,17 @@ namespace B18_Ex02_Interface
 			return char.ToUpper(playerInputForAnotherRound) == 'Y';
 		}
 
-		public void PrintWinner(string i_Winner, char i_WinnerSymbol, uint i_WinnerScore)
+		public		void	PrintWinner(string i_Winner, char i_WinnerSymbol, uint i_WinnerScore)
 		{
 			Console.WriteLine(string.Format(@"{0} ({1}) Won! with the score of {2}.", i_Winner, i_WinnerSymbol, i_WinnerScore));
 		}
 
-		public void PrintTie()
+		public		void	PrintTie()
 		{
 			Console.WriteLine("Its a tie!");
 		}
 
-		public void PrintGameOver(string i_PlayerOneName, uint i_PlayerOneScore, string i_PlayerTwoName, uint i_PlayerTwoScore)
+		public		void	PrintGameOver(string i_PlayerOneName, uint i_PlayerOneScore, string i_PlayerTwoName, uint i_PlayerTwoScore)
 		{
 			Console.WriteLine(string.Format(
 @"The current scores are:
@@ -54,7 +63,7 @@ i_PlayerTwoName,
 i_PlayerTwoScore));
 		}
 
-		public void TurnInformation(string i_CurrentPlayerName, char i_CurrentPlayerSymbol, string i_PreviousPlayerName, char i_PreviousPlayerSymbol)
+		public		void	TurnInformation(string i_CurrentPlayerName, char i_CurrentPlayerSymbol, string i_PreviousPlayerName, char i_PreviousPlayerSymbol)
 		{
 			if(m_LastAction != null)
 			{
@@ -64,13 +73,13 @@ i_PlayerTwoScore));
 			Console.Write("{0}'s turn ({1}): ", i_CurrentPlayerName, i_CurrentPlayerSymbol);
 		}
 
-		public string askPlayerName(int i_PlayerNumber)
+		public		string	AskPlayerName(int i_PlayerNumber)
 		{
 			Console.WriteLine("Please enter player {0}s name: ", i_PlayerNumber == 0 ? "one" : "two");
 			return Console.ReadLine();
 		}
 
-		public int AskGameBoardSize()
+		public		int		AskGameBoardSize()
 		{
 			int gameBoardSize;
 			bool legalValue;
@@ -86,12 +95,12 @@ i_PlayerTwoScore));
 			return gameBoardSize;
 		}
 
-		public void ClearScreen()
+		public		void	ClearScreen()
 		{
 			Ex02.ConsoleUtils.Screen.Clear();
 		}
 
-		public char[,] GameBoard
+		public		char[,]	GameBoard
 		{
 			get
 			{
@@ -104,7 +113,7 @@ i_PlayerTwoScore));
 			}
 		}
 
-		public int GameBoardSize
+		public		int		GameBoardSize
 		{
 			get
 			{
@@ -112,7 +121,7 @@ i_PlayerTwoScore));
 			}
 		}
 
-		public string LastAction
+		public		string	LastAction
 		{
 			get
 			{
@@ -125,7 +134,7 @@ i_PlayerTwoScore));
 			}
 		}
 
-		public int AskHowManyPlayers()
+		public		int		AskHowManyPlayers()
 		{
 			int amountOfPlayers = 0;
 			Console.Write("How many players will be playing? (1 or 2): ");
@@ -140,7 +149,7 @@ i_PlayerTwoScore));
 			return amountOfPlayers;
 		}
 
-		public void PrintBoard()
+		public		void	PrintBoard()
 		{
 			int boardSize = m_GameBoard.GetLength(0);
 			printTopRowIndicators(boardSize);
@@ -152,7 +161,7 @@ i_PlayerTwoScore));
 			}
 		}
 
-		private void printTopRowIndicators(int i_Size)
+		private		void	printTopRowIndicators(int i_Size)
 		{
 			for (int i = 0; i < i_Size; i++)
 			{
@@ -162,7 +171,7 @@ i_PlayerTwoScore));
 			Console.Write(System.Environment.NewLine);
 		}
 
-		private void printSeperatorLine(int boardSize)
+		private		void	printSeperatorLine(int boardSize)
 		{
 			Console.Write(" ");
 			for (int i = 0; i < boardSize; i++)
@@ -174,7 +183,7 @@ i_PlayerTwoScore));
 			Console.Write(System.Environment.NewLine);
 		}
 
-		private void printCurrentBoardRow(int i_CurrentRow, int i_Size)
+		private		void	printCurrentBoardRow(int i_CurrentRow, int i_Size)
 		{
 			StringBuilder currentRow = new StringBuilder();
 			currentRow.Append((char)('a' + i_CurrentRow));
@@ -187,7 +196,7 @@ i_PlayerTwoScore));
 			Console.WriteLine(currentRow);
 		}
 
-		public bool getPlayerInput(List<string> i_LegalInputs, bool i_CanPlayerQuit, out int o_PlayerSelectedMove)
+		public		bool	GetPlayerInput(List<string> i_LegalInputs, bool i_CanPlayerQuit, out int o_PlayerSelectedMove)
 		{
 			string playerInput;
 			bool didPlayerQuit = false;
@@ -210,16 +219,7 @@ i_PlayerTwoScore));
 			return didPlayerQuit;
 		}
 
-		public enum eErrors
-		{
-			InvalidBoardInput = 1,
-			InvalidMoveInput = 2,
-			InvalidPieceMove = 3,
-			InvalidAmountOfPlayers = 4,
-			InvalidInput = 5
-		}
-
-		public void PrintError(eErrors i_Error)
+		public		void	PrintError(eErrors i_Error)
 		{
 			switch (i_Error)
 			{
@@ -242,6 +242,12 @@ Please enter a valid number of players (1 or 2): ");
 					Console.WriteLine("Invalid input!");
 					break;
 			}
+		}
+
+		public		void	EndGame()
+		{
+			Console.WriteLine("Game Over!{0}Thanks you for playing!{0}Press 'Enter' to exit!", System.Environment.NewLine);
+			Console.ReadLine();
 		}
 	}
 }

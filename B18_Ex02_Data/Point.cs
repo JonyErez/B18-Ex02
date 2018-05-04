@@ -6,37 +6,37 @@ namespace B18_Ex02_Data
 {
 	public class Point
 	{
-		private int x;
-		private int y;
+		private			int		x;
+		private			int		y;
 
-		public Point()
+		public					Point()
 		{
 			x = 0;
 			y = 0;
 		}
 
-		public static Point operator +(Point point1, Point point2)
+		public	static	Point	operator +(Point point1, Point point2)
 		{
 			return new Point(point1.X + point2.X, point1.Y + point2.Y);
 		}
 
-		public static Point operator -(Point point1, Point point2)
+		public	static	Point	operator -(Point point1, Point point2)
 		{
 			return new Point(point1.X - point2.X, point1.Y - point2.Y);
 		}
-
-		public static Point operator /(Point point1, int i_Divisor)
+	
+		public	static	Point	operator /(Point point1, int i_Divisor)
 		{
 			return new Point(point1.X / i_Divisor, point1.Y / i_Divisor);
 		}
 
-		public Point(int i_x, int i_y)
+		public					Point(int i_x, int i_y)
 		{
 			X = i_x;
 			Y = i_y;
 		}
 
-		public int X
+		public			int		X
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public int Y
+		public			int		Y
 		{
 			get
 			{
@@ -62,7 +62,7 @@ namespace B18_Ex02_Data
 			}
 		}
 
-		public void UpdateCoordinates(int i_x, int i_y)
+		public			void	UpdateCoordinates(int i_x, int i_y)
 		{
 			X = i_x;
 			Y = i_y;
