@@ -169,37 +169,37 @@ namespace B18_Ex02_Game_Controller
 			bool	vsComputer;
 
 			System.Console.Title = "Checkers Game - By Niv Dunay and Jonathan Erez";
-			InitializePlayerOne();
+			initializePlayerOne();
 			boardSize = m_View.AskGameBoardSize();
 			vsComputer = m_View.AskHowManyPlayers() == 1;
-			InitializePlayerTwo(vsComputer);
-			InitializeBoard(boardSize);
-			InitializeViewBoard();
+			initializePlayerTwo(vsComputer);
+			initializeBoard(boardSize);
+			initializeViewBoard();
 		}
 
-		private		void	InitializePlayerOne()
+		private		void	initializePlayerOne()
 		{
 			m_Model.InitializePlayerOne(m_View.AskPlayerName(m_Model.CurrentPlayerTurn));
 		}
 
-		private		void	InitializePlayerTwo(bool isComputer)
+		private		void	initializePlayerTwo(bool i_IsComputer)
 		{
-			if (!isComputer)
+			if (!i_IsComputer)
 			{
-				m_Model.InitializePlayerTwo(m_View.AskPlayerName(m_Model.OtherPlayer()), isComputer);
+				m_Model.InitializePlayerTwo(m_View.AskPlayerName(m_Model.OtherPlayer()), i_IsComputer);
 			}
 			else
 			{
-				m_Model.InitializePlayerTwo("CheckersAI", isComputer);
+				m_Model.InitializePlayerTwo("CheckersAI", i_IsComputer);
 			}
 		}
 
-		private		void	InitializeBoard(int gameBoardSize)
+		private		void	initializeBoard(int i_GameBoardSize)
 		{
-			m_Model.InitializeBoard(gameBoardSize);
+			m_Model.InitializeBoard(i_GameBoardSize);
 		}
 
-		private		void	InitializeViewBoard()
+		private		void	initializeViewBoard()
 		{
 			m_View.GameBoard = new char[m_Model.BoardSize, m_Model.BoardSize];
 			updateBoard();

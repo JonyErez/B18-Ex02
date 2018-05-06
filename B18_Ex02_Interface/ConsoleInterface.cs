@@ -194,10 +194,10 @@ System.Environment.NewLine));
 			Console.Write(System.Environment.NewLine);
 		}
 
-		private		void	printSeperatorLine(int boardSize)
+		private		void	printSeperatorLine(int i_BoardSize)
 		{
 			Console.Write(" ");
-			for (int i = 0; i < boardSize; i++)
+			for (int i = 0; i < i_BoardSize; i++)
 			{
 				Console.Write("====");
 			}

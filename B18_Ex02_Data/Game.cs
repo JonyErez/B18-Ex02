@@ -132,14 +132,14 @@ namespace B18_Ex02_Data
 			m_CurrentTurnPossibleMoves.Clear();
 			foreach (GamePiece currentPiece in m_Players[i_PlayerNumber].GamePieces)
 			{
-				m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(currentPiece));
+				m_CurrentTurnPossibleMoves.AddRange(m_Board.FindPossibleEatingMoves(currentPiece));
 			}
 
 			if(m_CurrentTurnPossibleMoves.Count == 0)
 			{
 				foreach (GamePiece currentPiece in m_Players[i_PlayerNumber].GamePieces)
 				{
-					m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleSteppingForwardMoves(currentPiece));
+					m_CurrentTurnPossibleMoves.AddRange(m_Board.FindPossibleSteppingForwardMoves(currentPiece));
 				}
 			}
 
@@ -149,7 +149,7 @@ namespace B18_Ex02_Data
 		public	bool			FindPlayersContinuationMoves()
 		{
 			m_CurrentTurnPossibleMoves.Clear();
-			m_CurrentTurnPossibleMoves.AddRange(m_Board.findPossibleEatingMoves(m_PieceToMove));
+			m_CurrentTurnPossibleMoves.AddRange(m_Board.FindPossibleEatingMoves(m_PieceToMove));
 
 			return m_CurrentTurnPossibleMoves.Count != 0;
 		}
@@ -163,7 +163,7 @@ namespace B18_Ex02_Data
 
 			if (m_CurrentTurnPossibleMoves[i_PieceMoveIndex].DoesEat)
 			{
-				eatPiece(m_Board.findEatenPiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex]));
+				eatPiece(m_Board.FindEatenPiece(m_CurrentTurnPossibleMoves[i_PieceMoveIndex]));
 				m_WasPieceEaten = true;
 			}
 
@@ -255,26 +255,26 @@ namespace B18_Ex02_Data
 			return m_Board.GetSymbol(i_Coordinates);
 		}
 
-		public	uint			GetPlayerNumberOfPieces(int PlayerNumber)
+		public	uint			GetPlayerNumberOfPieces(int i_PlayerNumber)
 		{
-			return (uint)m_Players[PlayerNumber].GamePieces.Count;
+			return (uint)m_Players[i_PlayerNumber].GamePieces.Count;
 		}
 
-		public	void			SetPlayerScore(uint i_Score, int PlayerNumber)
+		public	void			SetPlayerScore(uint i_Score, int i_PlayerNumber)
 		{
-			m_Players[PlayerNumber].Score += i_Score;
+			m_Players[i_PlayerNumber].Score += i_Score;
 		}
 
-		public	uint			GetPlayerScore(int PlayerNumber)
+		public	uint			GetPlayerScore(int i_PlayerNumber)
 		{
-			return m_Players[PlayerNumber].Score;
+			return m_Players[i_PlayerNumber].Score;
 		}
 
-		public	uint			CalculatePlayerScore(int PlayerNumber)
+		public	uint			CalculatePlayerScore(int i_PlayerNumber)
 		{
 			uint playerScore = 0;
 
-			foreach (GamePiece currentPiece in m_Players[PlayerNumber].GamePieces)
+			foreach (GamePiece currentPiece in m_Players[i_PlayerNumber].GamePieces)
 			{
 				if (currentPiece.IsKing)
 				{

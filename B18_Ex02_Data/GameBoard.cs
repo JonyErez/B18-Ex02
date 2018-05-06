@@ -15,7 +15,7 @@ namespace B18_Ex02_Data
 			m_Board = new GamePiece[i_BoardSize, i_BoardSize];
 		}
 
-		public	List<PieceMove>	findPossibleSteppingForwardMoves(GamePiece i_GamePiece)
+		public	List<PieceMove>	FindPossibleSteppingForwardMoves(GamePiece i_GamePiece)
 		{
 			List<PieceMove> possibleSteppingForwardMoves = new List<PieceMove>(2);
 
@@ -63,7 +63,7 @@ namespace B18_Ex02_Data
 			return steppingMove;
 		}
 
-		public	List<PieceMove>	findPossibleEatingMoves(GamePiece i_GamePiece)
+		public	List<PieceMove>	FindPossibleEatingMoves(GamePiece i_GamePiece)
 		{
 			List<PieceMove> possibleEatingMoves = new List<PieceMove>(2);
 
@@ -122,7 +122,7 @@ namespace B18_Ex02_Data
 			return EatingMove;
 		}
 
-		public	GamePiece		findEatenPiece(PieceMove i_EatingMove)
+		public	GamePiece		FindEatenPiece(PieceMove i_EatingMove)
 		{
 			Point eatenPieceLocation;
 			Point difference = i_EatingMove.Destination - i_EatingMove.Location;
