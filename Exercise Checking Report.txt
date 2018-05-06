@@ -1,0 +1,10 @@
+==========================Exercise Checking Report==========================
+Exercise No...........: 2
+First Student Details.: 204883359 - Jonathan Erez
+Second Student Details: 311250757 - Niv Dunay
+Delivery Date.........: 06 - May - 2018
+Delivered In Delay....: No
+Delay Reason..........: None
+Visual Studio Version.: Visual Studio 2017 Community
+Comments..............: None
+=======================End Exercise Checking Report=========================

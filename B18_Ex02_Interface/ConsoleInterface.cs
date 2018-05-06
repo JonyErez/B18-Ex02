@@ -2,14 +2,13 @@
 using System.Text;
 using System.Collections.Generic;
 using Ex02.ConsoleUtils;
-using B18_Ex02_Data;
 
 namespace B18_Ex02_Interface
 {
 	public class ConsoleInterface
 	{
-		private		char[,]		m_GameBoard;
-		private		string		m_LastAction = null;
+		private		char[,]	m_GameBoard;
+		private		string	m_LastAction = null;
 
 		public		enum	eErrors
 		{
